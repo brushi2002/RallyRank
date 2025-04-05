@@ -1,17 +1,27 @@
 import React from 'react';
-import { View, StyleSheet, ActivityIndicator } from 'react-native';
+import { View, StyleSheet, ActivityIndicator, Button } from 'react-native';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { useGlobalContext } from '@/lib/global-provider';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { IconSymbol, IconSymbolName } from '@/components/ui/IconSymbol';
-import { Models } from 'appwrite';
+import { Models } from 'react-native-appwrite';
+import { account } from '@/lib/appwrite';
+import { router } from 'expo-router';
 
 type ExtendedUser = {
   name?: string;
   email: string;
   location?: string;
   phone?: string;
+}
+const handleLogout = async () => {
+  try {
+    await account.deleteSession('current');
+    router.replace('/sign-in');
+  } catch (error) {
+    console.error('Logout error:', error);
+  }
 }
 
 const InfoRow = ({ icon, label, value }: { icon: IconSymbolName; label: string; value: string }) => (
@@ -85,6 +95,12 @@ export default function Profile() {
             value={userInfo.phone || 'Not set'}
           />
         </View>
+         <View style={styles.buttonContainer}>
+            <Button
+              title="Logout"
+              onPress={handleLogout}
+            />
+          </View>
       </SafeAreaView>
     </SafeAreaProvider>
   );
@@ -100,5 +116,9 @@ const styles = StyleSheet.create({
   titleContainer: {
     flexDirection: 'row',
     gap: 8,
+  },
+  buttonContainer: {
+    marginTop: 20,
+    paddingHorizontal: 16,
   },
 });

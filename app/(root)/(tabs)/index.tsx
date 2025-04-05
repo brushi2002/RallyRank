@@ -23,8 +23,6 @@ export default function HomeScreen() {
     fn: getMatchResults,
     skip: false
   });
-  console.log("matchdata in index.tsx");
-  console.log(matchData);
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
@@ -48,52 +46,50 @@ export default function HomeScreen() {
           <Text className="text-sm text-gray-600">{match.player_id1.name}</Text>
         </View>
         <View className="px-4">
-          <Text className={`text-xl font-bold ${match.winner === match.player_id1.$id ? 'text-green-600' : match.winner === match.player_id2.$id ? 'text-green-600' : 'text-gray-400'}`}>
-            {match.winner === match.player_id1.$id || match.winner === match.player_id2.$id ? 'beat' : 'vs'}
-          </Text>
+          <Text className="text-sm font-semibold">vs</Text>
         </View>
-        <View className="flex-1">
+        <View className="flex-1 items-end">
           <Text className="text-sm text-gray-600">{match.player_id2.name}</Text>
         </View>
       </View>
-      <View className="flex-row justify-center items-center">
-        <Text className="text-sm font-semibold text-gray-700">
-          {match.p1set1score}-{match.p2set1score}, {match.p1set2score}-{match.p2set2score}
-          {match.p1set3score ? `, ${match.p1set3score}-${match.p2set3score}` : ''}
-        </Text>
+      <View className="flex-row justify-between items-center">
+        <View className="flex-1">
+          <Text className="text-lg font-semibold">{match.p1set1score}-{match.p2set1score}</Text>
+          {match.p1set2score !== undefined && (
+            <Text className="text-lg font-semibold">{match.p1set2score}-{match.p2set2score}</Text>
+          )}
+          {match.p1set3score != 0 && match.p2set3score != 0 && (
+            <Text className="text-lg font-semibold">{match.p1set3score}-{match.p2set3score}</Text>
+          )}
+        </View>
+        <View className="flex-1 items-end">
+          <Text className="text-sm font-semibold text-green-600">
+            Winner: {match.winner === match.player_id1.$id ? match.player_id1.name : match.player_id2.name}
+          </Text>
+        </View>
       </View>
     </TouchableOpacity>
   );
 
   return (
-    <SafeAreaProvider>
-      <SafeAreaView className="flex-1 bg-gray-50">
-        <ScrollView className="p-4">
-          <View className="flex-row justify-between items-center mb-6">
-            <Text className="text-2xl font-bold">Recent Matches</Text>
-            <TouchableOpacity className="bg-blue-500 px-4 py-2 rounded-lg">
-              <Text className="text-white font-semibold">New Match</Text>
-            </TouchableOpacity>
-          </View>
-
-          {loading ? (
-            <View className="flex-1 justify-center items-center py-8">
-              <Text className="text-gray-500">Loading matches...</Text>
-            </View>
-          ) : error ? (
-            <View className="flex-1 justify-center items-center py-8">
-              <Text className="text-red-500">Error loading matches</Text>
-            </View>
-          ) : matchData?.documents?.length === 0 ? (
-            <View className="flex-1 justify-center items-center py-8">
-              <Text className="text-gray-500">No matches found</Text>
-            </View>
-          ) : (
-            matchData?.documents?.map((match: Models.Document) => renderMatchCard(match as MatchResult))
-          )}
-        </ScrollView>
-      </SafeAreaView>
-    </SafeAreaProvider>
+    <View className="flex-1 bg-gray-50">
+      <ScrollView 
+        className="flex-1"
+        contentContainerStyle={{ padding: 16 }}
+        showsVerticalScrollIndicator={true}
+      >
+        <Text className="text-2xl font-bold mb-4">Recent Matches</Text>
+        {loading ? (
+          <Text>Loading...</Text>
+        ) : error ? (
+          <Text>Error: {error.toString()}</Text>
+        ) : matchData?.documents && matchData.documents.length > 0 ? (
+          matchData.documents.map((match) => renderMatchCard(match as MatchResult))
+        ) : (
+          <Text>No matches found</Text>
+        )}
+      </ScrollView>
+    </View>
   );
 }
 

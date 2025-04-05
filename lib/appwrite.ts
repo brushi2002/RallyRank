@@ -92,9 +92,10 @@ import { InteractionManagerStatic } from "react-native";
 
   export async function loginwithEmail(email: string, password: string) {
     const loggedIn = await account.createEmailPasswordSession(email, password);
+    console.log("Welcome Back, You are logged in");
     return loggedIn;
 
-    console.log("Welcome Back, You are logged in");
+    
   }
   
   export async function login() {
