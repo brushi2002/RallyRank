@@ -23,6 +23,8 @@ export default function HomeScreen() {
     fn: getMatchResults,
     skip: false
   });
+  console.log("matchdata in index.tsx");
+  console.log(matchData);
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
@@ -58,7 +60,7 @@ export default function HomeScreen() {
           {match.p1set2score !== undefined && (
             <Text className="text-lg font-semibold">{match.p1set2score}-{match.p2set2score}</Text>
           )}
-          {match.p1set3score != 0 && match.p2set3score != 0 && (
+          {match.p1set3score !== undefined && (
             <Text className="text-lg font-semibold">{match.p1set3score}-{match.p2set3score}</Text>
           )}
         </View>
@@ -72,24 +74,22 @@ export default function HomeScreen() {
   );
 
   return (
-    <View className="flex-1 bg-gray-50">
-      <ScrollView 
-        className="flex-1"
-        contentContainerStyle={{ padding: 16 }}
-        showsVerticalScrollIndicator={true}
-      >
-        <Text className="text-2xl font-bold mb-4">Recent Matches</Text>
-        {loading ? (
-          <Text>Loading...</Text>
-        ) : error ? (
-          <Text>Error: {error.toString()}</Text>
-        ) : matchData?.documents && matchData.documents.length > 0 ? (
-          matchData.documents.map((match) => renderMatchCard(match as MatchResult))
-        ) : (
-          <Text>No matches found</Text>
-        )}
-      </ScrollView>
-    </View>
+    <SafeAreaProvider>
+      <SafeAreaView className="flex-1 bg-gray-50">
+        <ScrollView className="flex-1" contentContainerStyle={{ padding: 16 }}>
+          <Text className="text-2xl font-bold mb-4">Recent Matches</Text>
+          {loading ? (
+            <Text>Loading...</Text>
+          ) : error ? (
+            <Text>Error: {error.toString()}</Text>
+          ) : matchData?.documents && matchData.documents.length > 0 ? (
+            matchData.documents.map((match) => renderMatchCard(match as MatchResult))
+          ) : (
+            <Text>No matches found</Text>
+          )}
+        </ScrollView>
+      </SafeAreaView>
+    </SafeAreaProvider>
   );
 }
 
