@@ -18,6 +18,12 @@ interface MatchResult extends Models.Document {
   p2set3score: number;
 }
 
+const Categories = ["My Matches"];
+
+const handleCategoryPress = (category: string) => {
+  console.log(category);
+}
+
 export default function HomeScreen() {
   const { data: matchData, loading, error } = useAppwrite({
     fn: getMatchResults,
@@ -75,6 +81,24 @@ export default function HomeScreen() {
 
   return (
     <SafeAreaProvider>
+      <View style={{flex: 1, padding: 5, backgroundColor: 'blue'}}>
+        {Categories.map((category) => (
+          <TouchableOpacity 
+          key={category}
+
+          className="flex flex-col items-start mr-4 px-4 py-2 rounded-full bg-gray-100"
+          onPress={() => handleCategoryPress(category)}
+          >
+          <Text className={`text-sm`}>
+            {category}
+          </Text>
+        </TouchableOpacity>
+
+
+
+        ))}
+      
+      </View>
       <SafeAreaView className="flex-1 bg-gray-50">
         <ScrollView className="flex-1" contentContainerStyle={{ padding: 16 }}>
           <Text className="text-2xl font-bold mb-4">Recent Matches</Text>

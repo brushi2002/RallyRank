@@ -178,11 +178,17 @@ export default function EnterScore() {
     {
         setHasWininTwo(true);
         setWinner('player1');
+        setSet3tiebreaker(false);
+        newScores[2].player1 = 0;
+        newScores[2].player2 = 0;
     }
     else if(((newScores[0].player2 == 6 && newScores[0].player1 != 7) || newScores[0].player2 == 7) && ((newScores[1].player2 == 6 && newScores[1].player1 != 7) || newScores[1].player2 == 7))
     {
         setHasWininTwo(true);
         setWinner('player2');
+        setSet3tiebreaker(false);
+        newScores[2].player1 = 0;
+        newScores[2].player2 = 0;
     }
     else
     {
@@ -224,7 +230,7 @@ export default function EnterScore() {
     //tbd maybe move into  own function
     const regextiebreaker = /^(7-6|6-7)$/;
     console.log(set1Score); //console.log(newScores);   
-    if(regextiebreaker.test(set3Score))
+    if(regextiebreaker.test(set3Score) && !HasWininTwo)
     {
       setSet3tiebreaker(true);
     }
@@ -279,7 +285,7 @@ export default function EnterScore() {
 
     console.log(setScores[0].tiebreaker);
     console.log(setScores);
-    if((setScores[2].tiebreaker == null || setScores[2].tiebreaker == 0 && set3tiebreaker == true) || (setScores[1].tiebreaker == null || setScores[1].tiebreaker == 0 && set2tiebreaker == true) || (setScores[0].tiebreaker == null || setScores[0].tiebreaker == 0 && set1tiebreaker == true))
+    if(((setScores[0].tiebreaker == null || setScores[0].tiebreaker == 0) && set1tiebreaker == true) || ((setScores[1].tiebreaker == null || setScores[1].tiebreaker == 0) && set2tiebreaker == true) || ((setScores[2].tiebreaker == null || setScores[2].tiebreaker == 0) && set3tiebreaker == true && !HasWininTwo))
     {
       alert('Please enter a tiebreaker score');
       return;

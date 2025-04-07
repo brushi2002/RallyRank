@@ -15,14 +15,6 @@ type ExtendedUser = {
   location?: string;
   phone?: string;
 }
-const handleLogout = async () => {
-  try {
-    await account.deleteSession('current');
-    router.replace('/sign-in');
-  } catch (error) {
-    console.error('Logout error:', error);
-  }
-}
 
 const InfoRow = ({ icon, label, value }: { icon: IconSymbolName; label: string; value: string }) => (
   <View className="flex-row items-center p-4 bg-white border-b border-gray-100">
@@ -37,7 +29,17 @@ const InfoRow = ({ icon, label, value }: { icon: IconSymbolName; label: string; 
 );
 
 export default function Profile() {
-  const { user, loading } = useGlobalContext();
+  const { user, loading, refetch } = useGlobalContext();
+  
+  const handleLogout = async () => {
+    try {
+      await account.deleteSession('current');
+      refetch();
+      router.replace('/sign-in');
+    } catch (error) {
+      console.error('Logout error:', error);
+    }
+  }
   
   if (loading) {
     return (
