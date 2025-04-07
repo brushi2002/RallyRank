@@ -143,11 +143,14 @@ import { InteractionManagerStatic } from "react-native";
   export async function getCurrentUser() {
     try {
       const result = await account.get();
+      console.log("Appwrite response:", result);
+
       if (result.$id) {
         const userAvatar = avatar.getInitials(result.name);
+        const userResult = await databases.getDocument(config.databaseId!, config.playerCollectionId!, result.$id);
   
         return {
-          ...result,
+          ...userResult,
           avatar: userAvatar.toString(),
         };
       }

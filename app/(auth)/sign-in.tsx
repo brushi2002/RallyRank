@@ -74,22 +74,10 @@ const SignIn = () => {
           />
         </View>
 
-        {/* Sign Up Button */}
-        <View className="px-8 mb-4">
-          <TouchableOpacity
-            className="bg-blue-500 py-4 rounded-lg"
-            onPress={() => router.push('/(auth)/register')}
-          >
-            <Text className="text-white text-center text-lg font-semibold">
-              Sign Up For Free
-            </Text>
-          </TouchableOpacity>
-        </View>
-
         {/* Login Form */}
         <View className="px-8">
           <Text className="text-center text-gray-600 mb-4">
-            Already have an account?
+            Sign in to your account
           </Text>
           
           <Controller
@@ -152,6 +140,19 @@ const SignIn = () => {
               {isLoading ? 'Logging in...' : 'Login'}
             </Text>
           </TouchableOpacity>
+
+          {/* Sign Up Link */}
+          <View className="mt-6">
+            <Text className="text-center text-gray-600">
+              Don't have an account?{' '}
+              <Text 
+                className="text-blue-500 font-semibold"
+                onPress={() => router.push('/(auth)/register')}
+              >
+                Sign up
+              </Text>
+            </Text>
+          </View>
         </View>
       </ScrollView>
     </SafeAreaView>

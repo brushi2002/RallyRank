@@ -1,4 +1,4 @@
-import { View, Text, ScrollView, Alert, TouchableOpacity, Button, StyleSheet, TextInput } from 'react-native'
+import { View, Text, ScrollView, Alert, TouchableOpacity, StyleSheet, TextInput } from 'react-native'
 import React, { useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { registerUser } from '@/lib/appwrite'
@@ -57,19 +57,19 @@ const Register = () => {
 
   return (
     <SafeAreaView className="bg-white flex-1">
-      <ScrollView pointerEvents="box-none">
+      <ScrollView pointerEvents="box-none" className="flex-1">
         {/* Welcome Text */}
-<View className="flex-col items-center mt-8 mb-4">
-  <Text className="text-base text-black">Welcome to</Text>
-  <Text className="text-3xl font-bold" style={{ color: '#2E8B57' }}>Rally Rank</Text>
-</View>
+        <View className="flex-col items-center mt-8 mb-4">
+          <Text className="text-base text-black">Welcome to</Text>
+          <Text className="text-3xl font-bold" style={{ color: '#2E8B57' }}>Rally Rank</Text>
+        </View>
 
-{/* Create Account Text */}
-<Text className="text-xl text-center text-gray-700 mt-4 mb-8">
-  Create Your Account
-</Text>
+        {/* Create Account Text */}
+        <Text className="text-xl text-center text-gray-700 mt-4 mb-8">
+          Create Your Account
+        </Text>
 
-        <View style={styles.container}>
+        <View className="px-8">
           <Controller
             control={control}
             name="Name"
@@ -91,7 +91,7 @@ const Register = () => {
             )}
           />
           {errors.Name && (
-            <Text className="text-red-500">
+            <Text className="text-red-500 mb-2">
               {errors.Name.message}
             </Text>
           )}
@@ -119,7 +119,7 @@ const Register = () => {
             )}
           />
           {errors.Email && (
-            <Text className="text-red-500">
+            <Text className="text-red-500 mb-2">
               {errors.Email.message}
             </Text>
           )}
@@ -146,11 +146,12 @@ const Register = () => {
             )}
           />
           {errors.Password && (
-            <Text className="text-red-500">
+            <Text className="text-red-500 mb-2">
               {errors.Password.message}
             </Text>
           )}
-           <Controller
+
+          <Controller
             control={control}
             name="LeagueCode"
             rules={{
@@ -165,22 +166,37 @@ const Register = () => {
                 onBlur={onBlur}
                 onChangeText={onChange}
                 value={value}
-                placeholder="LeagueCode"
+                placeholder="League Code (Optional)"
               />
             )}
           />
-           {leagueCode.length > 0 && (
-            <Text className="text-red-500">
-               {leagueCode}
+          {leagueCode.length > 0 && (
+            <Text className="text-red-500 mb-2">
+              {leagueCode}
             </Text>
           )}
 
-          <View style={styles.buttonContainer}>
-            <Button
-              title="Register"
-              onPress={handleSubmit(handleRegister)}
-              disabled={isLoading}
-            />
+          <TouchableOpacity
+            className="bg-gray-200 py-4 rounded-lg mt-4"
+            onPress={handleSubmit(handleRegister)}
+            disabled={isLoading}
+          >
+            <Text className="text-center text-gray-800 text-lg">
+              {isLoading ? 'Creating Account...' : 'Create Account'}
+            </Text>
+          </TouchableOpacity>
+
+          {/* Sign In Link */}
+          <View className="mt-6">
+            <Text className="text-center text-gray-600">
+              Already have an account?{' '}
+              <Text 
+                className="text-blue-500 font-semibold"
+                onPress={() => router.push('/(auth)/sign-in')}
+              >
+                Sign in
+              </Text>
+            </Text>
           </View>
         </View>
       </ScrollView>
@@ -189,24 +205,14 @@ const Register = () => {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    padding: 16,
-  },
-  header: {
-    fontSize: 24,
-    marginBottom: 20,
-  },
   input: {
-    height: 40,
-    borderColor: 'gray',
+    height: 50,
+    borderColor: '#E5E7EB',
     borderWidth: 1,
     marginBottom: 10,
-    paddingLeft: 8,
-  },
-  buttonContainer: {
-    marginTop: 20,
+    paddingLeft: 16,
+    borderRadius: 8,
+    backgroundColor: '#F9FAFB',
   },
 });
 

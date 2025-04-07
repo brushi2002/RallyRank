@@ -60,7 +60,7 @@ export default function HomeScreen() {
           {match.p1set2score !== undefined && (
             <Text className="text-lg font-semibold">{match.p1set2score}-{match.p2set2score}</Text>
           )}
-          {match.p1set3score !== undefined && (
+          {match.p1set3score !== undefined || (match.p1set3score !== 0 && match.p2set3score !== 0) && (
             <Text className="text-lg font-semibold">{match.p1set3score}-{match.p2set3score}</Text>
           )}
         </View>
