@@ -144,14 +144,14 @@ import { InteractionManagerStatic } from "react-native";
     try {
       const result = await account.get();
       console.log("Appwrite response:", result);
+      console.log(result.targets[0].identifier)
 
       if (result.$id) {
         const userAvatar = avatar.getInitials(result.name);
-        const userResult = await databases.getDocument(config.databaseId!, config.playerCollectionId!, result.$id);
-  
+        const userResult = await databases.listDocuments(config.databaseId!, config.playerCollectionId!, [Query.equal('email', result.targets[0].identifier)])
+        console.log(userResult)
         return {
-          ...userResult,
-          avatar: userAvatar.toString(),
+          ...userResult.documents[0],
         };
       }
   
@@ -273,6 +273,9 @@ import { InteractionManagerStatic } from "react-native";
     p2set3score: number;
     winner: string;
     MatchDate: string;
+    s1TieBreakerPointsLost: number | null;
+    s2TieBreakerPointsLost: number | null;
+    s3TieBreakerPointsLost: number | null;    
   }) {
     matchData.league = config.globalLeagueId || '67e6ee1c001a8cded289';
     console.log('create match result');

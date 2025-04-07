@@ -4,76 +4,98 @@ import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { Picker } from '@react-native-picker/picker';
 import { getPlayers, createMatchResult, config } from '@/lib/appwrite';
 import { useAppwrite } from '@/lib/useAppwrite';
-import { useForm } from 'react-hook-form';
 import { GlobalProvider, useGlobalContext } from '@/lib/global-provider';
 
 interface SetScore {
   player1: number;
   player2: number;
+  tiebreaker: number | null;
 }
 
 const SetScoreInput = ({ 
   setNumber, 
   scores, 
   onScoreChange,
+  onTieBreakerChange,
   hasWinner, 
-  ErrMessage
+  ErrMessage,
+  showTiebreaker
 }: { 
   setNumber: number, 
   scores: SetScore, 
   onScoreChange: (player: 'player1' | 'player2', score: number) => void,
+  onTieBreakerChange: (score: number) => void,
   hasWinner: boolean,
-  ErrMessage: string
+  ErrMessage: string,
+  showTiebreaker: boolean
 }) => {
   return(
- ((!hasWinner && setNumber == 3) || (setNumber != 3)) && <View className="mb-2">
-    <Text className="text-lg mb-1">Set {setNumber}:</Text>
-    <View className="flex-row justify-between">
-      <View className="flex-1 mr-4">
-        <Text className="text-sm mb-2">Your Score:</Text>
-        <View className="flex-row flex-wrap gap-2">
-          {[0, 1, 2, 3, 4, 5, 6, 7].map((value) => (
-            <TouchableOpacity
-              key={value}
-              style={{opacity: (hasWinner && setNumber == 3) ? 0 : 1}}
-              onPress={() => onScoreChange('player1', value)}
-              className={`px-4 py-2 rounded ${
-                scores.player1 === value ? 'bg-blue-500' : 'bg-gray-200'
-              }`}
-            >
-              <Text className={scores.player1 === value ? 'text-white' : 'text-gray-800'}>
-                {value}
-              </Text>
-            </TouchableOpacity>
-          ))}
+    ((!hasWinner && setNumber == 3) || (setNumber != 3)) && <View className="mb-2">
+      <Text className="text-lg mb-1">Set {setNumber}:</Text>
+      <View className="flex-row justify-between">
+        <View className="flex-1 mr-4">
+          <Text className="text-sm mb-2">Your Score:</Text>
+          <View className="flex-row flex-wrap gap-2">
+            {[0, 1, 2, 3, 4, 5, 6, 7].map((value) => (
+              <TouchableOpacity
+                key={value}
+                style={{opacity: (hasWinner && setNumber == 3) ? 0 : 1}}
+                onPress={() => onScoreChange('player1', value)}
+                className={`px-4 py-2 rounded ${
+                  scores.player1 === value ? 'bg-blue-500' : 'bg-gray-200'
+                }`}
+              >
+                <Text className={scores.player1 === value ? 'text-white' : 'text-gray-800'}>
+                  {value}
+                </Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+          {/* Tiebreaker scores in a separate row */}
+          <View className="flex-row justify-between mt-4">
+            <View className="flex-1">
+              <TextInput
+                style={[
+                  styles.input, 
+                  {width: 70, opacity: (showTiebreaker) ? 1 : 0}
+                ]}
+                onChangeText={(text) => onTieBreakerChange(parseInt(text))}
+                placeholder="TieBreak Points"
+                autoCapitalize="none"
+                maxLength={2}
+              />
+            </View>
+          </View>
+        </View>
+        <View className="flex-1">
+          <Text className="text-sm mb-2">Opponent Score:</Text>
+          <View className="flex-row flex-wrap gap-2">
+            {[0, 1, 2, 3, 4, 5, 6, 7].map((value) => (
+              <TouchableOpacity
+                key={value}
+                style={{opacity: (hasWinner && setNumber == 3) ? 0 : 1}}
+                onPress={() => onScoreChange('player2', value)}
+                className={`px-4 py-2 rounded ${
+                  scores.player2 === value ? 'bg-blue-500' : 'bg-gray-200'
+                }`}
+              >
+                <Text className={scores.player2 === value ? 'text-white' : 'text-gray-800'}>
+                  {value}
+                </Text>
+              </TouchableOpacity>
+            ))}
+          </View>
         </View>
       </View>
-      <View className="flex-1">
-        <Text className="text-sm mb-2">Opponent Score:</Text>
-        <View className="flex-row flex-wrap gap-2">
-          {[0, 1, 2, 3, 4, 5, 6, 7].map((value) => (
-            <TouchableOpacity
-              key={value}
-              style={{opacity: (hasWinner && setNumber == 3) ? 0 : 1}}
-              onPress={() => onScoreChange('player2', value)}
-              className={`px-4 py-2 rounded ${
-                scores.player2 === value ? 'bg-blue-500' : 'bg-gray-200'
-              }`}
-            >
-              <Text className={scores.player2 === value ? 'text-white' : 'text-gray-800'}>
-                {value}
-              </Text>
-            </TouchableOpacity>
-          ))}
-          
-        </View>
+      
+      {/* Error message in its own row */}
+      {ErrMessage ? (
         <Text className="text-red-500 mt-2">
-              {ErrMessage}
+          {ErrMessage}
         </Text>
-      </View>
+      ) : null}
     </View>
-  </View>
-);
+  );
 }
 
 const styles = StyleSheet.create({
@@ -108,10 +130,14 @@ export default function EnterScore() {
   const [HasWininTwo, setHasWininTwo] = useState(false);
   const [message, setMessage] = useState([] as string[]);
   const [setScores, setSetScores] = useState<SetScore[]>([
-    { player1: 0, player2: 0 },
-    { player1: 0, player2: 0 },
-    { player1: 0, player2: 0 }
+    { player1: 0, player2: 0, tiebreaker: null },
+    { player1: 0, player2: 0, tiebreaker: null },
+    { player1: 0, player2: 0, tiebreaker: null }
   ]);
+  const [winner, setWinner] = useState('');
+  const [set1tiebreaker, setSet1tiebreaker] = useState(false);
+  const [set2tiebreaker, setSet2tiebreaker] = useState(false);
+  const [set3tiebreaker, setSet3tiebreaker] = useState(false);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showPicker, setShowPicker] = useState(false);
@@ -125,6 +151,18 @@ export default function EnterScore() {
     (player: any) => player.$id === selectedOpponent
   )?.name || 'Select an opponent';
 
+  const handleTieBreakerChange = (setIndex: number, score: number) => {
+    console.log('yep HTS');
+
+    console.log(score);
+    const newScores = [...setScores];
+    newScores[setIndex] = {
+      ...newScores[setIndex],
+      tiebreaker: score
+    };
+    setSetScores(newScores);
+  };
+
   const handleScoreChange = (setIndex: number, player: 'player1' | 'player2', score: number) => {
     const newScores = [...setScores];
     let winner = '';
@@ -132,29 +170,30 @@ export default function EnterScore() {
       ...newScores[setIndex],
       [player]: score
     };
+    console.log(newScores);
     setSetScores(newScores);
 
      //check if the same player won the first 2 sets
     if(((newScores[0].player1 == 6 && newScores[0].player2 != 7) || newScores[0].player1 == 7) && ((newScores[1].player1 == 6 && newScores[1].player2 != 7) || newScores[1].player1 == 7))
     {
         setHasWininTwo(true);
-        winner = 'player1';
+        setWinner('player1');
     }
     else if(((newScores[0].player2 == 6 && newScores[0].player1 != 7) || newScores[0].player2 == 7) && ((newScores[1].player2 == 6 && newScores[1].player1 != 7) || newScores[1].player2 == 7))
     {
         setHasWininTwo(true);
-        winner = 'player2'
+        setWinner('player2');
     }
     else
     {
       setHasWininTwo(false);
       if((newScores[2].player1 == 6 && newScores[2].player2 != 7) || (newScores[2].player1 == 7))
       {
-        winner = 'player1';
+        setWinner('player1');
       }
       else if((newScores[2].player2 == 6 && newScores[2].player1 != 7) || (newScores[2].player2 == 7))
       {
-        winner = 'player2';
+        setWinner('player2');
       }
     }
     //const validSetScore = /^(6-[0-5]|7-[5-6]|7-6\([1-7]-[1-7]\))$/;
@@ -182,9 +221,34 @@ export default function EnterScore() {
     {
       setMessage(["", "", ""])
     }
-    
-      //console.log(newScores);
-   
+    //tbd maybe move into  own function
+    const regextiebreaker = /^(7-6|6-7)$/;
+    console.log(set1Score); //console.log(newScores);   
+    if(regextiebreaker.test(set3Score))
+    {
+      setSet3tiebreaker(true);
+    }
+    else
+    {
+      setSet3tiebreaker(false);
+    }
+    if(regextiebreaker.test(set2Score))
+    {
+      setSet2tiebreaker(true);
+    }
+    else
+    {
+      setSet2tiebreaker(false);
+    }
+    if(regextiebreaker.test(set1Score))
+    {
+      console.log("yep");
+      setSet1tiebreaker(true);
+    }
+    else
+    {
+      setSet1tiebreaker(false);
+    }
       //console.log(hasWinner);
   };
 
@@ -194,6 +258,34 @@ export default function EnterScore() {
       return;
     }
     
+    // Validate set scores
+    const validSetScore = /^(6-[0-5]|7-[5-6]|7-6|[0-4]-6|[5-6]-7|6-7)$/;
+    const set1Score = `${setScores[0].player1}-${setScores[0].player2}`;
+    const set2Score = `${setScores[1].player1}-${setScores[1].player2}`;
+    const set3Score = `${setScores[2].player1}-${setScores[2].player2}`;
+
+    if (!validSetScore.test(set1Score)) {
+      alert('Please enter a valid score for Set 1');
+      return;
+    }
+    if (!validSetScore.test(set2Score)) {
+      alert('Please enter a valid score for Set 2');
+      return;
+    }
+    if (!HasWininTwo && !validSetScore.test(set3Score)) {
+      alert('Please enter a valid score for Set 3');
+      return;
+    }
+
+    console.log(setScores[0].tiebreaker);
+    console.log(setScores);
+    if((setScores[2].tiebreaker == null || setScores[2].tiebreaker == 0 && set3tiebreaker == true) || (setScores[1].tiebreaker == null || setScores[1].tiebreaker == 0 && set2tiebreaker == true) || (setScores[0].tiebreaker == null || setScores[0].tiebreaker == 0 && set1tiebreaker == true))
+    {
+      alert('Please enter a tiebreaker score');
+      return;
+    }
+    
+      console.log(user);
     if (!user?.$id) {
       alert('User not found. Please try logging in again.');
       return;
@@ -211,16 +303,19 @@ export default function EnterScore() {
         p2set1score: setScores[0].player2,
         p2set2score: setScores[1].player2,
         p2set3score: setScores[2].player2,
-        winner: 'player1',
-        MatchDate: new Date().toISOString()
+        winner: winner,
+        MatchDate: new Date().toISOString(),
+        s1TieBreakerPointsLost: setScores[0].tiebreaker,
+        s2TieBreakerPointsLost: setScores[1].tiebreaker,
+        s3TieBreakerPointsLost: setScores[2].tiebreaker,
       });
       alert('Match result saved successfully!');
       // Reset form
       setSelectedOpponent('');
       setSetScores([
-        { player1: 0, player2: 0 },
-        { player1: 0, player2: 0 },
-        { player1: 0, player2: 0 }
+        { player1: 0, player2: 0, tiebreaker: 0 },
+        { player1: 0, player2: 0, tiebreaker: 0 },
+        { player1: 0, player2: 0, tiebreaker: 0 }
       ]);
     } catch (error) {
       console.error('Error saving match result:', error);
@@ -314,8 +409,14 @@ export default function EnterScore() {
                   setNumber={index + 1}
                   scores={setScores[index]}
                   onScoreChange={(player, score) => handleScoreChange(index, player, score)}
+                  onTieBreakerChange={(score) => handleTieBreakerChange(index, score)}
                   hasWinner={HasWininTwo}
                   ErrMessage={message[index]}
+                  showTiebreaker={
+                    index === 0 ? set1tiebreaker : 
+                    index === 1 ? set2tiebreaker : 
+                    set3tiebreaker
+                  }
                 />
               ))}
             </View>
