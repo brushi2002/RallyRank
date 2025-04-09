@@ -63,4 +63,4 @@ Email: eric@ericsb.com
 Website: Rally-Rank.com
 
 Apple App Store Requirements
-This app collects and uses data as described in this Privacy Policy. By downloading and using [Your Tennis App Name], you agree to these terms. All data collection and use comply with Apple's App Store Review Guidelines and applicable privacy laws.
+This app collects and uses data as described in this Privacy Policy. By downloading and using RallyRank, you agree to these terms. All data collection and use comply with Apple's App Store Review Guidelines and applicable privacy laws.
