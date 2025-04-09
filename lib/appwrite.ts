@@ -171,7 +171,12 @@ import { InteractionManagerStatic } from "react-native";
       
       const result = await databases.listDocuments(
         config.databaseId!,
+<<<<<<< HEAD
         config.memberCollectionId!, [Query.orderDesc('rating_value'), Query.equal('league', '67e6ee1c001a8cded289')]);
+=======
+        config.memberCollectionId!, 
+        [Query.orderDesc('rating_value'), Query.equal('league', '67e6ee1c001a8cded289')]);
+>>>>>>> ae26a61 (fixing)
       
       console.log("Appwrite response:", result);
       return result;
@@ -238,8 +243,30 @@ import { InteractionManagerStatic } from "react-native";
       return null;
     }
   }
+<<<<<<< HEAD
   
   export async function getMatchResults(){
+=======
+
+
+  export async function getMatchResultsForLeague(leagueID?: string){
+    try {
+      leagueID = leagueID || config.globalLeagueId || '67e6ee1c001a8cded289';
+      const result = await databases.listDocuments(
+        config.databaseId!,
+        config.matchCollectionId!, 
+        [Query.equal('league', leagueID)]
+      );
+      return result;  
+    }
+    catch (error) {
+      console.error('Error fetching matches:', error);
+      return null;
+    }
+  }
+  
+  export async function getAllMatchResults(){
+>>>>>>> ae26a61 (fixing)
     try {
       //console.log('Fetching matches with config:', {
       //  databaseId: config.databaseId,

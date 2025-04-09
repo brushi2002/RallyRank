@@ -25,11 +25,45 @@ const Item = ({ name, rank, recentMatches, id }: { name: string; rank: number; r
     match.player_id1 === id || match.player_id2 === id
   ).slice(0, 3); // Get last 3 matches
 
+<<<<<<< HEAD
   return (
     <View className="p-4 bg-white border-b border-gray-100">
       <View className="flex-row items-center mb-2">
         <View className="w-8 h-8 rounded-full bg-blue-500 items-center justify-center mr-4">
           <Text className="text-white font-bold">{rank}</Text>
+=======
+  const getMedalColor = (rank: number) => {
+    switch (rank) {
+      case 1:
+        return 'bg-yellow-400';
+      case 2:
+        return 'bg-gray-300';
+      case 3:
+        return 'bg-amber-600';
+      default:
+        return 'bg-blue-500';
+    }
+  };
+
+  const getMedalIcon = (rank: number) => {
+    switch (rank) {
+      case 1:
+        return '🥇';
+      case 2:
+        return '🥈';
+      case 3:
+        return '🥉';
+      default:
+        return rank.toString();
+    }
+  };
+
+  return (
+    <View className="p-4 bg-white border-b border-gray-100">
+      <View className="flex-row items-center mb-2">
+        <View className={`w-8 h-8 rounded-full ${getMedalColor(rank)} items-center justify-center mr-4`}>
+          <Text className="text-white font-bold">{getMedalIcon(rank)}</Text>
+>>>>>>> ae26a61 (fixing)
         </View>
         <Text className="text-lg font-semibold text-gray-800">{name}</Text>
       </View>

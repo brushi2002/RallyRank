@@ -30,7 +30,11 @@ const SetScoreInput = ({
   showTiebreaker: boolean
 }) => {
   return(
+<<<<<<< HEAD
     ((!hasWinner && setNumber == 3) || (setNumber != 3)) && <View className="mb-2">
+=======
+    <View className="mb-2">
+>>>>>>> ae26a61 (fixing)
       <Text className="text-lg mb-1">Set {setNumber}:</Text>
       <View className="flex-row justify-between">
         <View className="flex-1 mr-4">
@@ -52,6 +56,7 @@ const SetScoreInput = ({
             ))}
           </View>
           {/* Tiebreaker scores in a separate row */}
+<<<<<<< HEAD
           <View className="flex-row justify-between mt-4">
             <View className="flex-1">
               <TextInput
@@ -66,6 +71,23 @@ const SetScoreInput = ({
               />
             </View>
           </View>
+=======
+          {showTiebreaker && (
+            <View className="flex-row justify-between mt-4">
+              
+              <View className="flex-1">
+              <Text className="text-sm mb-2">Tiebreaker Points of Loser:</Text>
+                <TextInput
+                  style={[styles.input, {width: 70}]}
+                  onChangeText={(text) => onTieBreakerChange(parseInt(text))}
+                  placeholder="tieBreak Points"
+                  autoCapitalize="none"
+                  maxLength={2}
+                />
+              </View>
+            </View>
+          )}
+>>>>>>> ae26a61 (fixing)
         </View>
         <View className="flex-1">
           <Text className="text-sm mb-2">Opponent Score:</Text>
@@ -141,16 +163,24 @@ export default function EnterScore() {
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showPicker, setShowPicker] = useState(false);
+<<<<<<< HEAD
+=======
+  const [selectedOpponentName, setSelectedOpponentName] = useState('');
+
+>>>>>>> ae26a61 (fixing)
 
   const { data: playersData, loading, error } = useAppwrite({
     fn: getPlayers,
     skip: false
   });
 
+<<<<<<< HEAD
   const selectedOpponentName = playersData?.documents?.find(
     (player: any) => player.$id === selectedOpponent
   )?.name || 'Select an opponent';
 
+=======
+>>>>>>> ae26a61 (fixing)
   const handleTieBreakerChange = (setIndex: number, score: number) => {
     console.log('yep HTS');
 
@@ -340,7 +370,13 @@ export default function EnterScore() {
             
             {/* Opponent Selection */}
             <View className="mb-4">
+<<<<<<< HEAD
               <Text className="text-lg mb-2">Select Opponent:</Text>
+=======
+
+              <Text className="text-lg mb-2">Opponent
+              </Text>
+>>>>>>> ae26a61 (fixing)
               <TouchableOpacity
                 onPress={() => setShowPicker(true)}
                 className="border border-gray-300 rounded-lg bg-white p-4"
@@ -365,7 +401,11 @@ export default function EnterScore() {
               <View className="flex-1 justify-end bg-black/50">
                 <View className="bg-white rounded-t-2xl p-4">
                   <View className="flex-row justify-between items-center mb-4">
+<<<<<<< HEAD
                     <Text className="text-lg font-semibold">Select Opponent</Text>
+=======
+                    <Text className="text-lg font-semibold">{selectedOpponentName}</Text>
+>>>>>>> ae26a61 (fixing)
                     <TouchableOpacity onPress={() => setShowPicker(false)}>
                       <Text className="text-blue-500">Done</Text>
                     </TouchableOpacity>
@@ -381,7 +421,15 @@ export default function EnterScore() {
                   ) : (
                     <Picker
                       selectedValue={selectedOpponent}
+<<<<<<< HEAD
                       onValueChange={(value: string) => setSelectedOpponent(value)}
+=======
+                      onValueChange={(itemValue: string, itemIndex: number) => {
+                        setSelectedOpponent(itemValue);
+
+                        setSelectedOpponentName(playersData?.documents[itemIndex-1] ? playersData?.documents[itemIndex-1].player.name : 'Select an opponent');
+                      }}
+>>>>>>> ae26a61 (fixing)
                       style={{ height: 200 }}
                       itemStyle={{ fontSize: 16 }}
                     >
@@ -394,7 +442,11 @@ export default function EnterScore() {
                         user && user.$id !== member.player.$id && (
                           <Picker.Item 
                             key={member.player.$id} 
+<<<<<<< HEAD
                             label={member.player.name} 
+=======
+                            label={member.player.name}
+>>>>>>> ae26a61 (fixing)
                             value={member.player.$id}
                             color="#000"
                           />
