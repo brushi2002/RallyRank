@@ -30,7 +30,7 @@ const SetScoreInput = ({
   showTiebreaker: boolean
 }) => {
   return (
-    <View className="mb-2">
+    <View className="mb-2" style={{opacity: (hasWinner && setNumber == 3) ? 0 : 1}}>
       <Text className="text-lg mb-1">Set {setNumber}:</Text>
       <View className="flex-row justify-between">
         <View className="flex-1 mr-4">
@@ -53,20 +53,6 @@ const SetScoreInput = ({
           </View>
           {/* Tiebreaker scores in a separate row */}
 
-          <View className="flex-row justify-between mt-4">
-            <View className="flex-1">
-              <TextInput
-                style={[
-                  styles.input, 
-                  {width: 70, opacity: (showTiebreaker) ? 1 : 0}
-                ]}
-                onChangeText={(text) => onTieBreakerChange(parseInt(text))}
-                placeholder="TieBreak Points"
-                autoCapitalize="none"
-                maxLength={2}
-              />
-            </View>
-          </View>
           {showTiebreaker && (
             <View className="flex-row justify-between mt-4">
               
@@ -75,7 +61,7 @@ const SetScoreInput = ({
                 <TextInput
                   style={[styles.input, {width: 70}]}
                   onChangeText={(text) => onTieBreakerChange(parseInt(text))}
-                  placeholder="tieBreak Points"
+                  placeholder="TieBreak Points"
                   autoCapitalize="none"
                   maxLength={2}
                 />
@@ -354,8 +340,6 @@ export default function EnterScore() {
             {/* Opponent Selection */}
             <View className="mb-4">
               <Text className="text-lg mb-2">Select Opponent:</Text>
-              <Text className="text-lg mb-2">Opponent
-              </Text>
               <TouchableOpacity
                 onPress={() => setShowPicker(true)}
                 className="border border-gray-300 rounded-lg bg-white p-4"

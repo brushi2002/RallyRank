@@ -109,7 +109,8 @@ function HomeScreenContent() {
         </View>
         <View className="flex-1 items-end">
           <Text className="text-sm font-semibold text-green-600">
-            Winner: {match.winner === match.player_id1.$id ? match.player_id1.name : match.player_id2.name}
+            Winner: {
+            match.winner === 'player1' ? match.player_id1.name : match.player_id2.name}
           </Text>
         </View>
       </View>

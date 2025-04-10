@@ -5,7 +5,7 @@ import { verifyInstallation } from "nativewind";
 import { Models } from "appwrite";
 import { FontAwesome } from '@expo/vector-icons';
 import { useTheme } from '@react-navigation/native';
-import { getAllMatchResults, databases } from "@/lib/appwrite";
+import { getAllMatchResults, databases, getMatchResultsForLeague } from "@/lib/appwrite";
 
 import { getPlayers, getLadderMembers } from "@/lib/appwrite";
 import { useAppwrite } from "@/lib/useAppwrite";
@@ -25,6 +25,7 @@ type Player = {
   losses: number;
   recentMatches: MatchResult[];
   winPercentage: number;
+  rating: number;
 };
 
 const getMedalColor = (rank: number): string | null => {
@@ -93,34 +94,66 @@ const LadderStandings = () => {
     const fetchData = async () => {
       try {
         setLoading(true);
+        console.log("Fetching ladder data...");
+        
         const [playersResponse, matchesResponse] = await Promise.all([
-          databases.listDocuments(process.env.EXPO_PUBLIC_APPWRITE_DATABASE_ID!, process.env.EXPO_PUBLIC_APPWRITE_PLAYER_COLLECTION_ID!, []),
-          getAllMatchResults()
+          getLadderMembers(),
+          getMatchResultsForLeague()
         ]);
 
-        if (!playersResponse?.documents || !matchesResponse?.documents) {
-          throw new Error('Failed to fetch data');
+        console.log("Players response:", playersResponse);
+        console.log("Matches response:", matchesResponse);
+
+        if (!playersResponse?.documents) {
+          console.error("No players data received");
+          throw new Error('Failed to fetch players data');
+        }
+        
+        if (!matchesResponse?.documents) {
+          console.error("No matches data received");
+          throw new Error('Failed to fetch matches data');
         }
 
         const matches = matchesResponse.documents as MatchResult[];
         const playerStats = new Map<string, Player>();
-
+        
         // Initialize player stats
         playersResponse.documents.forEach((player: Models.Document) => {
-          playerStats.set(player.$id, {
-            id: player.$id,
-            name: player.name,
+          console.log("Processing player:", player);
+          if (!player.player || !player.player.$id) {
+            console.error("Invalid player data:", player);
+            return;
+          }
+          
+          playerStats.set(player.player.$id, {
+            id: player.player.$id,
+            name: player.player.name,
             wins: 0,
             losses: 0,
             recentMatches: [],
-            winPercentage: 0
+            winPercentage: 0,
+            rating: player.rating_value || 0
           });
         });
 
+        if (playerStats.size === 0) {
+          console.error("No valid players found in the response");
+          throw new Error('No players found in the ladder');
+        }
+
         // Process matches
         matches.forEach((match) => {
-          const winner = playerStats.get(match.winner);
-          const loser = playerStats.get(match.loser);
+          let winner, loser;
+          
+          if(match.winner == "player1") {
+            winner = playerStats.get(match.player_id1.$id);
+            loser = playerStats.get(match.player_id2.$id);
+          }
+          else
+          {
+            winner = playerStats.get(match.player_id2.$id);
+            loser = playerStats.get(match.player_id1.$id);
+          }
 
           if (winner) {
             winner.wins++;
@@ -134,17 +167,19 @@ const LadderStandings = () => {
 
         // Calculate win percentages and sort
         const rankedPlayers = Array.from(playerStats.values())
-          .map(player => ({
-            ...player,
-            winPercentage: player.wins / (player.wins + player.losses) || 0
-          }))
-          .sort((a, b) => b.winPercentage - a.winPercentage);
+          .sort((a, b) => b.rating - a.rating);
+        
+        console.log("Ranked players:", rankedPlayers);
+        
+        if (rankedPlayers.length === 0) {
+          throw new Error('No players found after processing');
+        }
 
         setPlayers(rankedPlayers);
         setLoading(false);
       } catch (err) {
         console.error('Error fetching data:', err);
-        setError('Failed to load ladder standings');
+        setError(`Failed to load ladder standings: ${err instanceof Error ? err.message : 'Unknown error'}`);
         setLoading(false);
       }
     };
