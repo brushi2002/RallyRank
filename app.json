@@ -8,14 +8,11 @@
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
-<<<<<<< HEAD
-=======
     "splash": {
       "image": "./assets/images/icon.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
->>>>>>> ae26a61 (fixing)
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.tennisapp.app",

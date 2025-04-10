@@ -1,117 +1,158 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Text, FlatList, ActivityIndicator, View } from "react-native";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import { verifyInstallation } from "nativewind";
 import { Models } from "appwrite";
+import { FontAwesome } from '@expo/vector-icons';
+import { useTheme } from '@react-navigation/native';
+import { getAllMatchResults, databases } from "@/lib/appwrite";
 
-import { getPlayers, getMatchResults, getLadderMembers } from "@/lib/appwrite";
+import { getPlayers, getLadderMembers } from "@/lib/appwrite";
 import { useAppwrite } from "@/lib/useAppwrite";
 
 type MatchResult = Models.Document & {
-  player_id1: string;
-  player_id2: string;
-  p1set1score: number;
-  p1set2score: number;
-  p1set3score: number;
-  p2set1score: number;
-  p2set2score: number;
-  p2set3score: number;
   winner: string;
-  MatchDate: string;
-}
+  loser: string;
+  winnerScore: number;
+  loserScore: number;
+  date: string;
+};
 
-const Item = ({ name, rank, recentMatches, id }: { name: string; rank: number; recentMatches: MatchResult[]; id: string }) => {
-  const playerMatches = recentMatches.filter(match => 
-    match.player_id1 === id || match.player_id2 === id
-  ).slice(0, 3); // Get last 3 matches
+type Player = {
+  id: string;
+  name: string;
+  wins: number;
+  losses: number;
+  recentMatches: MatchResult[];
+  winPercentage: number;
+};
 
-<<<<<<< HEAD
+const getMedalColor = (rank: number): string | null => {
+  switch (rank) {
+    case 1:
+      return '#FFD700'; // Gold
+    case 2:
+      return '#C0C0C0'; // Silver
+    case 3:
+      return '#CD7F32'; // Bronze
+    default:
+      return null;
+  }
+};
+
+const getMedalIcon = (rank: number): "trophy" | null => {
+  switch (rank) {
+    case 1:
+    case 2:
+    case 3:
+      return "trophy";
+    default:
+      return null;
+  }
+};
+
+const Item = ({ player, rank }: { player: Player; rank: number }) => {
+  const { colors } = useTheme();
+  const medalColor = getMedalColor(rank);
+  const medalIcon = getMedalIcon(rank);
+
   return (
-    <View className="p-4 bg-white border-b border-gray-100">
-      <View className="flex-row items-center mb-2">
-        <View className="w-8 h-8 rounded-full bg-blue-500 items-center justify-center mr-4">
-          <Text className="text-white font-bold">{rank}</Text>
-=======
-  const getMedalColor = (rank: number) => {
-    switch (rank) {
-      case 1:
-        return 'bg-yellow-400';
-      case 2:
-        return 'bg-gray-300';
-      case 3:
-        return 'bg-amber-600';
-      default:
-        return 'bg-blue-500';
-    }
-  };
-
-  const getMedalIcon = (rank: number) => {
-    switch (rank) {
-      case 1:
-        return '🥇';
-      case 2:
-        return '🥈';
-      case 3:
-        return '🥉';
-      default:
-        return rank.toString();
-    }
-  };
-
-  return (
-    <View className="p-4 bg-white border-b border-gray-100">
-      <View className="flex-row items-center mb-2">
-        <View className={`w-8 h-8 rounded-full ${getMedalColor(rank)} items-center justify-center mr-4`}>
-          <Text className="text-white font-bold">{getMedalIcon(rank)}</Text>
->>>>>>> ae26a61 (fixing)
-        </View>
-        <Text className="text-lg font-semibold text-gray-800">{name}</Text>
-      </View>
-      {playerMatches.length > 0 && (
-        <View className="ml-12">
-          <Text className="text-sm text-gray-500 mb-1">Recent Matches:</Text>
-          {playerMatches.map((match, index) => (
-            <View key={match.$id} className="flex-row items-center mb-1">
-              <Text className="text-sm text-gray-600">
-                {match.player_id1 === id ? 
-                  `${match.p1set1score}-${match.p2set1score}, ${match.p1set2score}-${match.p2set2score}${match.p1set3score ? `, ${match.p1set3score}-${match.p2set3score}` : ''}` :
-                  `${match.p2set1score}-${match.p1set1score}, ${match.p2set2score}-${match.p1set2score}${match.p2set3score ? `, ${match.p2set3score}-${match.p1set3score}` : ''}`
-                }
-              </Text>
-              <Text className="text-xs text-gray-400 ml-2">
-                vs {match.player_id1 === id ? match.player_id2 : match.player_id1}
-              </Text>
+    <View className="flex-row items-center bg-white p-4 mb-2 rounded-lg shadow-sm">
+      <View className="flex-1">
+        <View className="flex-row items-center">
+          {medalIcon ? (
+            <FontAwesome name={medalIcon} size={20} color={medalColor || undefined} style={{ marginRight: 8 }} />
+          ) : (
+            <View className="w-7 h-7 rounded-full bg-gray-100 items-center justify-center mr-2">
+              <Text className="text-gray-600">{rank}</Text>
             </View>
-          ))}
+          )}
+          <Text className="text-lg font-semibold flex-1">{player.name}</Text>
+          <Text className="text-gray-600">
+            {player.wins}W - {player.losses}L
+          </Text>
         </View>
-      )}
+        <View className="mt-2">
+          <Text className="text-gray-500 text-sm">
+            Recent matches: {player.recentMatches.slice(0, 3).map((match) => 
+              match.winner === player.id ? 'W' : 'L'
+            ).join(' ')}
+          </Text>
+        </View>
+      </View>
     </View>
   );
 };
 
 const LadderStandings = () => {
-  const { 
-    data: members,
-    loading: playersLoading,
-    error: playersError
-  } = useAppwrite({
-    fn: getLadderMembers,
-    skip: false
-  });
+  const [players, setPlayers] = useState<Player[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const {
-    data: matches,
-    loading: matchesLoading,
-    error: matchesError
-  } = useAppwrite({
-    fn: getMatchResults,
-    skip: false
-  });
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        const [playersResponse, matchesResponse] = await Promise.all([
+          databases.listDocuments(process.env.EXPO_PUBLIC_APPWRITE_DATABASE_ID!, process.env.EXPO_PUBLIC_APPWRITE_PLAYER_COLLECTION_ID!, []),
+          getAllMatchResults()
+        ]);
 
-  console.log('Players:', members?.documents);
-  console.log('Matches:', matches?.documents);
+        if (!playersResponse?.documents || !matchesResponse?.documents) {
+          throw new Error('Failed to fetch data');
+        }
 
-  if (playersLoading || matchesLoading) {
+        const matches = matchesResponse.documents as MatchResult[];
+        const playerStats = new Map<string, Player>();
+
+        // Initialize player stats
+        playersResponse.documents.forEach((player: Models.Document) => {
+          playerStats.set(player.$id, {
+            id: player.$id,
+            name: player.name,
+            wins: 0,
+            losses: 0,
+            recentMatches: [],
+            winPercentage: 0
+          });
+        });
+
+        // Process matches
+        matches.forEach((match) => {
+          const winner = playerStats.get(match.winner);
+          const loser = playerStats.get(match.loser);
+
+          if (winner) {
+            winner.wins++;
+            winner.recentMatches.push(match);
+          }
+          if (loser) {
+            loser.losses++;
+            loser.recentMatches.push(match);
+          }
+        });
+
+        // Calculate win percentages and sort
+        const rankedPlayers = Array.from(playerStats.values())
+          .map(player => ({
+            ...player,
+            winPercentage: player.wins / (player.wins + player.losses) || 0
+          }))
+          .sort((a, b) => b.winPercentage - a.winPercentage);
+
+        setPlayers(rankedPlayers);
+        setLoading(false);
+      } catch (err) {
+        console.error('Error fetching data:', err);
+        setError('Failed to load ladder standings');
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  if (loading) {
     return (
       <SafeAreaProvider>
         <SafeAreaView className="flex-1 items-center justify-center bg-gray-50">
@@ -121,11 +162,11 @@ const LadderStandings = () => {
     );
   }
 
-  if (playersError || matchesError) {
+  if (error) {
     return (
       <SafeAreaProvider>
         <SafeAreaView className="flex-1 items-center justify-center bg-gray-50">
-          <Text className="text-red-500 text-lg">Error loading data</Text>
+          <Text className="text-red-500 text-lg">{error}</Text>
         </SafeAreaView>
       </SafeAreaProvider>
     );
@@ -138,17 +179,10 @@ const LadderStandings = () => {
           <Text className="text-2xl font-bold text-gray-800">Ladder Standings</Text>
         </View>
         <FlatList
-          data={members?.documents || []}
-          renderItem={({item, index}) => (
-            <Item 
-              name={item.player.name} 
-              rank={index + 1}
-              id={item.$id}
-              recentMatches={(matches?.documents || []) as MatchResult[]}
-            />
-          )}
-          keyExtractor={item => item.$id}
-          contentContainerClassName="pb-4"
+          data={players}
+          renderItem={({ item, index }) => <Item player={item} rank={index + 1} />}
+          keyExtractor={(item) => item.id}
+          contentContainerStyle={{ padding: 16 }}
           ListEmptyComponent={() => (
             <View className="flex-1 items-center justify-center p-4">
               <Text className="text-gray-500 text-lg">No players found</Text>

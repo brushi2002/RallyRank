@@ -2,15 +2,10 @@ import React from 'react';
 import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { useAppwrite } from '@/lib/useAppwrite';
-<<<<<<< HEAD
-import { getMatchResults } from '@/lib/appwrite';
-import { Models } from 'react-native-appwrite';
-=======
 import { getAllMatchResults, getMatchResultsForLeague } from '@/lib/appwrite';
 import { Models } from 'react-native-appwrite';
 import { useState, useEffect } from 'react';
 import { useGlobalContext, GlobalProvider } from '@/lib/global-provider';
->>>>>>> ae26a61 (fixing)
 
 interface MatchResult extends Models.Document {
   player_id1: any;
@@ -27,19 +22,6 @@ interface MatchResult extends Models.Document {
 
 const Categories = ["My Matches"];
 
-<<<<<<< HEAD
-const handleCategoryPress = (category: string) => {
-  console.log(category);
-}
-
-export default function HomeScreen() {
-  const { data: matchData, loading, error } = useAppwrite({
-    fn: getMatchResults,
-    skip: false
-  });
-  console.log("matchdata in index.tsx");
-  console.log(matchData);
-=======
 export default function HomeScreen() {
   return (
     <GlobalProvider>
@@ -86,7 +68,6 @@ function HomeScreenContent() {
 
   //console.log("matchdata in index.tsx");
   //console.log(matchData);
->>>>>>> ae26a61 (fixing)
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
@@ -137,29 +118,6 @@ function HomeScreenContent() {
 
   return (
     <SafeAreaProvider>
-<<<<<<< HEAD
-      <View style={{flex: 1, padding: 5, backgroundColor: 'blue'}}>
-        {Categories.map((category) => (
-          <TouchableOpacity 
-          key={category}
-
-          className="flex flex-col items-start mr-4 px-4 py-2 rounded-full bg-gray-100"
-          onPress={() => handleCategoryPress(category)}
-          >
-          <Text className={`text-sm`}>
-            {category}
-          </Text>
-        </TouchableOpacity>
-
-
-
-        ))}
-      
-      </View>
-      <SafeAreaView className="flex-1 bg-gray-50">
-        <ScrollView className="flex-1" contentContainerStyle={{ padding: 16 }}>
-          <Text className="text-2xl font-bold mb-4">Recent Matches</Text>
-=======
       <SafeAreaView className="flex-1 bg-gray-50">
         <View className="py-2 bg-white border-b border-gray-200">
           <ScrollView 
@@ -186,18 +144,12 @@ function HomeScreenContent() {
         </View>
         <ScrollView className="flex-1" contentContainerStyle={{ padding: 8 }}>
           <Text className="text-2xl font-bold mb-2">Recent Matches</Text>
->>>>>>> ae26a61 (fixing)
           {loading ? (
             <Text>Loading...</Text>
           ) : error ? (
             <Text>Error: {error.toString()}</Text>
-<<<<<<< HEAD
-          ) : matchData?.documents && matchData.documents.length > 0 ? (
-            matchData.documents.map((match) => renderMatchCard(match as MatchResult))
-=======
           ) : MData && MData.length > 0 ? (
             MData.map((match: MatchResult) => renderMatchCard(match))
->>>>>>> ae26a61 (fixing)
           ) : (
             <Text>No matches found</Text>
           )}
