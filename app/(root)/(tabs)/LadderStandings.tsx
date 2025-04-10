@@ -76,7 +76,7 @@ const Item = ({ player, rank }: { player: Player; rank: number }) => {
         <View className="mt-2">
           <Text className="text-gray-500 text-sm">
             Recent matches: {player.recentMatches.slice(0, 3).map((match) => 
-              match.winner === player.id ? 'W' : 'L'
+              match.winner === "player1" ? 'W' : 'L'
             ).join(' ')}
           </Text>
         </View>
@@ -101,17 +101,11 @@ const LadderStandings = () => {
           getMatchResultsForLeague()
         ]);
 
-        console.log("Players response:", playersResponse);
-        console.log("Matches response:", matchesResponse);
+        console.log("Players response structure:", JSON.stringify(playersResponse, null, 2));
+        console.log("Matches response structure:", JSON.stringify(matchesResponse, null, 2));
 
-        if (!playersResponse?.documents) {
-          console.error("No players data received");
-          throw new Error('Failed to fetch players data');
-        }
-        
-        if (!matchesResponse?.documents) {
-          console.error("No matches data received");
-          throw new Error('Failed to fetch matches data');
+        if (!playersResponse?.documents || !matchesResponse?.documents) {
+          throw new Error('Failed to fetch data');
         }
 
         const matches = matchesResponse.documents as MatchResult[];
@@ -119,12 +113,7 @@ const LadderStandings = () => {
         
         // Initialize player stats
         playersResponse.documents.forEach((player: Models.Document) => {
-          console.log("Processing player:", player);
-          if (!player.player || !player.player.$id) {
-            console.error("Invalid player data:", player);
-            return;
-          }
-          
+          console.log("Player document structure:", JSON.stringify(player, null, 2));
           playerStats.set(player.player.$id, {
             id: player.player.$id,
             name: player.player.name,
@@ -132,17 +121,15 @@ const LadderStandings = () => {
             losses: 0,
             recentMatches: [],
             winPercentage: 0,
-            rating: player.rating_value || 0
+            rating: player.rating_value
           });
         });
 
-        if (playerStats.size === 0) {
-          console.error("No valid players found in the response");
-          throw new Error('No players found in the ladder');
-        }
+        console.log("Player stats after initialization:", Array.from(playerStats.entries()));
 
         // Process matches
         matches.forEach((match) => {
+          console.log("Processing match:", JSON.stringify(match, null, 2));
           let winner, loser;
           
           if(match.winner == "player1") {
@@ -165,21 +152,19 @@ const LadderStandings = () => {
           }
         });
 
+        console.log("Player stats after processing matches:", Array.from(playerStats.entries()));
+
         // Calculate win percentages and sort
         const rankedPlayers = Array.from(playerStats.values())
           .sort((a, b) => b.rating - a.rating);
         
-        console.log("Ranked players:", rankedPlayers);
-        
-        if (rankedPlayers.length === 0) {
-          throw new Error('No players found after processing');
-        }
+        console.log("Final ranked players:", rankedPlayers);
 
         setPlayers(rankedPlayers);
         setLoading(false);
       } catch (err) {
         console.error('Error fetching data:', err);
-        setError(`Failed to load ladder standings: ${err instanceof Error ? err.message : 'Unknown error'}`);
+        setError('Failed to load ladder standings');
         setLoading(false);
       }
     };

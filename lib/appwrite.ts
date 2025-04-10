@@ -6,7 +6,7 @@ import {
     OAuthProvider,
     Avatars,
     Query,
-    Storage,
+    Storage
   } from "react-native-appwrite";
   import * as Linking from "expo-linking";
   import { openAuthSessionAsync } from "expo-web-browser";
@@ -277,6 +277,40 @@ import { InteractionManagerStatic } from "react-native";
       return null;
     }
     
+  }
+
+  //export async function deleteUser(userId: string) {
+  //  try {
+  //    const Users
+  //    const result = await (userId);
+  //    return result;
+   // } catch (error) {
+   //   console.error('Error deleting user:', error);
+   //   return null;
+
+  export async function createLadder(ladderData: {
+    Name: string,
+    Description: string;
+    LadderCode: string;
+    CreateDate: string; 
+  }) {
+    //matchData.league = config.globalLeagueId || '67e6ee1c001a8cded289';
+    console.log('create Ladder');
+    console.log(ladderData);
+    const uniqueId = ID.unique();
+    try {
+      const result = await databases.createDocument(
+        config.databaseId!,
+        config.leagueCollectionId!,
+        uniqueId,
+        ladderData
+      );
+
+      return result;
+    } catch (error) {
+      console.error('Error creating league result:', error);
+      throw error;
+    }
   }
 
   export async function createMatchResult(matchData: {

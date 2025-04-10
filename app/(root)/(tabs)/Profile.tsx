@@ -40,6 +40,16 @@ export default function Profile() {
       console.error('Logout error:', error);
     }
   }
+
+  const handleDisableAccount = async () => {
+    try {
+      await account.updateStatus();
+      refetch();
+      router.replace('/sign-in');
+    } catch (error) {
+      console.error('Disable account error:', error);
+    }
+  }
   
   if (loading) {
     return (
@@ -101,6 +111,12 @@ export default function Profile() {
             <Button
               title="Logout"
               onPress={handleLogout}
+            />
+          </View>
+          <View style={styles.buttonContainer}>
+            <Button
+              title="Disable Account"
+              onPress={handleDisableAccount}
             />
           </View>
       </SafeAreaView>

@@ -58,6 +58,15 @@ export default function TabLayout() {
           headerShown: false,
         }}
       />
+       <Tabs.Screen
+        name="CreateLadder"
+        options={{
+          title: 'Create Ladder',
+          tabBarIcon: ({ color }) => <IconSymbol size={28} name="plus.circle.fill" color={color} />,
+          headerShown: false,
+        }}
+      />
     </Tabs>
+    
   );
 }

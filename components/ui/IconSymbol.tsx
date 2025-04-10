@@ -20,6 +20,7 @@ const MAPPING = {
   'envelope.fill': 'email',
   'location.fill': 'location-on',
   'phone.fill': 'phone',
+  'magnifyingglass': 'search',
 } as Partial<
   Record<
     import('expo-symbols').SymbolViewProps['name'],
