@@ -14,7 +14,7 @@
 		96905EF65AED1B983A6B3ABC /* libPods-TennisApp.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 58EEBF8E8E6FB1BC6CAF49B5 /* libPods-TennisApp.a */; };
 		B18059E884C0ABDD17F3DC3D /* ExpoModulesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC715A2D49A985799AEE119 /* ExpoModulesProvider.swift */; };
 		BB2F792D24A3F905000567C9 /* Expo.plist in Resources */ = {isa = PBXBuildFile; fileRef = BB2F792C24A3F905000567C9 /* Expo.plist */; };
-		9837B280D0AB4A6880EC29B3 /* noop-file.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95634670B9B44FD4A0FE94AC /* noop-file.swift */; };
+		87971C7E29AB47B6B649614B /* noop-file.swift in Sources */ = {isa = PBXBuildFile; fileRef = C87F458B1CF3430BB28011CF /* noop-file.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -31,8 +31,8 @@
 		BB2F792C24A3F905000567C9 /* Expo.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Expo.plist; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		FAC715A2D49A985799AEE119 /* ExpoModulesProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExpoModulesProvider.swift; path = "Pods/Target Support Files/Pods-TennisApp/ExpoModulesProvider.swift"; sourceTree = "<group>"; };
-		95634670B9B44FD4A0FE94AC /* noop-file.swift */ = {isa = PBXFileReference; name = "noop-file.swift"; path = "TennisApp/noop-file.swift"; sourceTree = "<group>"; fileEncoding = 4; lastKnownFileType = sourcecode.swift; explicitFileType = undefined; includeInIndex = 0; };
-		8D1841229A8F4DA18BB542C9 /* TennisApp-Bridging-Header.h */ = {isa = PBXFileReference; name = "TennisApp-Bridging-Header.h"; path = "TennisApp/TennisApp-Bridging-Header.h"; sourceTree = "<group>"; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; explicitFileType = undefined; includeInIndex = 0; };
+		C87F458B1CF3430BB28011CF /* noop-file.swift */ = {isa = PBXFileReference; name = "noop-file.swift"; path = "TennisApp/noop-file.swift"; sourceTree = "<group>"; fileEncoding = 4; lastKnownFileType = sourcecode.swift; explicitFileType = undefined; includeInIndex = 0; };
+		E930A301ACA94D8798CEA97B /* TennisApp-Bridging-Header.h */ = {isa = PBXFileReference; name = "TennisApp-Bridging-Header.h"; path = "TennisApp/TennisApp-Bridging-Header.h"; sourceTree = "<group>"; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -57,8 +57,8 @@
 				13B07FB61A68108700A75B9A /* Info.plist */,
 				13B07FB71A68108700A75B9A /* main.m */,
 				AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */,
-				95634670B9B44FD4A0FE94AC /* noop-file.swift */,
-				8D1841229A8F4DA18BB542C9 /* TennisApp-Bridging-Header.h */,
+				C87F458B1CF3430BB28011CF /* noop-file.swift */,
+				E930A301ACA94D8798CEA97B /* TennisApp-Bridging-Header.h */,
 			);
 			name = TennisApp;
 			sourceTree = "<group>";
@@ -198,7 +198,7 @@
 				BB2F792D24A3F905000567C9 /* Expo.plist in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				3E461D99554A48A4959DE609 /* SplashScreen.storyboard in Resources */,
-				B4B930D5C8FA454BA154C6BB /* TennisApp-Bridging-Header.h in Resources */,
+				D4844621D5F04EED92C2B51B /* TennisApp-Bridging-Header.h in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -274,7 +274,7 @@
 				13B07FBC1A68108700A75B9A /* AppDelegate.mm in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
 				B18059E884C0ABDD17F3DC3D /* ExpoModulesProvider.swift in Sources */,
-				9837B280D0AB4A6880EC29B3 /* noop-file.swift in Sources */,
+				87971C7E29AB47B6B649614B /* noop-file.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
