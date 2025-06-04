@@ -50,9 +50,14 @@ function HomeScreenContent() {
           if (matchData?.documents) {
             setMData(matchData.documents as MatchResult[]);
           }
+
         });
       };
       fetchData();
+
+      return () => {
+        setSelectedCategory('');
+      }
     }, [user?.leagueinfo.$id])
   );
 
@@ -64,6 +69,7 @@ function HomeScreenContent() {
     if (!user) return;
     const UserID = user.$id;
     console.log('UserID', UserID);
+    console.log('matchData', matchData);
     if(category == "My Matches") {
       setMData(matchData?.documents?.filter((match: any) => 
         match.player_id1.$id == UserID || match.player_id2.$id == UserID
@@ -73,6 +79,7 @@ function HomeScreenContent() {
       console.log('no category selected');
       setMData(matchData?.documents as MatchResult[]);
     }
+    console.log('MData', MData);
   }
 
   //console.log("matchdata in index.tsx");
