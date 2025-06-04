@@ -260,13 +260,13 @@ import { InteractionManagerStatic } from "react-native";
 
   export async function getMatchResultsForLeague(leagueID: string){
     try {
-      console.log('Fetching matches with leagueID:', leagueID);
+      //console.log('Fetching matches with leagueID:', leagueID);
       const result = await databases.listDocuments(
         config.databaseId!,
         config.matchCollectionId!, 
         [Query.equal('league', leagueID), Query.orderDesc('MatchDate')]
       );
-      console.log("Appwrite getMatchResultsForLeague response:", result);
+      //console.log("Appwrite getMatchResultsForLeague response:", result);
       return result;  
     }
     catch (error) {

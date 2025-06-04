@@ -102,7 +102,7 @@ const Item = ({ player, rank }: { player: Player; rank: number }) => {
         <View className="mt-2">
           <Text className={`text-sm ${isCurrentUser ? 'text-blue-500' : 'text-gray-500'}`}>
             Recent matches: {player.recentMatches.slice(0, 3).map((match) => 
-              match.winner === "player1" ? 'W' : 'L'
+              match.winner === "player1" && match.player_id1.$id === player.id ? 'W' : 'L'
             ).join(' ')}
           </Text>
         </View>
@@ -129,8 +129,8 @@ const LadderStandings = () => {
             getMatchResultsForLeague(user?.leagueinfo.league.$id || '')
           ]);
 
-          console.log("Players response structure:", JSON.stringify(playersResponse, null, 2));
-          console.log("Matches response structure:", JSON.stringify(matchesResponse, null, 2));
+          //console.log("Players response structure:", JSON.stringify(playersResponse, null, 2));
+          //console.log("Matches response structure:", JSON.stringify(matchesResponse, null, 2));
 
           if (!playersResponse?.documents || !matchesResponse?.documents) {
             throw new Error('Failed to fetch data');

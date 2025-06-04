@@ -63,7 +63,7 @@ function HomeScreenContent() {
     setSelectedCategory(category);
     if (!user) return;
     const UserID = user.$id;
-    
+    console.log('UserID', UserID);
     if(category == "My Matches") {
       setMData(matchData?.documents?.filter((match: any) => 
         match.player_id1.$id == UserID || match.player_id2.$id == UserID
