@@ -56,10 +56,10 @@ function HomeScreenContent() {
     }, [user?.leagueinfo.$id])
   );
 
-   console.log('Match data in HomeScreenContent:', matchData);
+   console.log('Match data in HomeScreenContent:', MData);
 
   const handleCategoryPress = (category: string) => {
-    //console.log(category);
+    console.log(category);
     setSelectedCategory(category);
     if (!user) return;
     const UserID = user.$id;
@@ -70,6 +70,7 @@ function HomeScreenContent() {
       ) as MatchResult[]);
     } else {
       // Reset to all matches when no category is selected
+      console.log('no category selected');
       setMData(matchData?.documents as MatchResult[]);
     }
   }
