@@ -46,6 +46,8 @@
     "react-native-appwrite": "^0.9.2",
     "react-native-css-interop": "^0.1.22",
     "react-native-gesture-handler": "~2.20.2",
+    "react-native-purchases": "^8.11.3",
+    "react-native-purchases-ui": "^8.11.3",
     "react-native-reanimated": "~3.16.1",
     "react-native-reanimated-carousel": "^4.0.2",
     "react-native-safe-area-context": "^4.12.0",

@@ -22,13 +22,14 @@
         "ITSAppUsesNonExemptEncryption": false
       }
     },
-    "android": {
+    "android": 
       "versionCode": 4,
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.tennisapp.app"
+      "package": "com.tennisapp.app",
+      "icon": "./assets/images/icon.png"
     },
     "web": {
       "bundler": "metro",
