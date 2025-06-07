@@ -22,7 +22,7 @@
         "ITSAppUsesNonExemptEncryption": false
       }
     },
-    "android": 
+    "android": {
       "versionCode": 4,
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
