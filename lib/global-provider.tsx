@@ -2,8 +2,6 @@ import { createContext, useContext, ReactNode, useState } from "react";
 import { useAppwrite } from "./useAppwrite";
 import { getCurrentUser } from "./appwrite";
 
-
-
 interface GlobalContextType {
     isLoggedIn: boolean;
     user: User | null;
