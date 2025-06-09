@@ -12,7 +12,9 @@ export default function RootLayout() {
         Purchases.setLogLevel(Purchases.LOG_LEVEL.DEBUG);
     
         if (Platform.OS === 'ios') {
+            console.log("Configured for iOS");
             Purchases.configure({ apiKey: "appl_ScXuRrRgmmQzOxyXwbKlMzBpggx" });
+            
         } 
         
         //tbd do android
