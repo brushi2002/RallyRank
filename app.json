@@ -16,7 +16,6 @@
       "supportsTablet": true,
       "bundleIdentifier": "com.tennisapp.app",
       "buildNumber": "5",
-      "NSLocalNetworkUsageDescription": "This app needs access to the local network to connect to the server.",
       "icon": "./assets/images/icon.png",
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false
@@ -47,7 +46,9 @@
           "backgroundColor": "#ffffff",
           "icon": "./assets/images/icon.png"
         }
-      ]
+      ],
+      "expo-font",
+      "expo-web-browser"
     ],
     "experiments": {
       "typedRoutes": true
