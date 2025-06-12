@@ -6,6 +6,7 @@ import { useGlobalContext } from '@/lib/global-provider'
 import { Redirect, router } from 'expo-router'
 import { Controller, useForm } from 'react-hook-form'
 
+
 const Register = () => {
   const { refetch, loading, isLoggedIn } = useGlobalContext();
   const [isLoading, setIsLoading] = useState(false);
