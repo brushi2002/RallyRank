@@ -30,7 +30,7 @@ export default function RootLayout() {
     const {loading, isLoggedIn} = useGlobalContext();
 
     useEffect(() => {
-        Purchases.setLogLevel(LOG_LEVEL.VERBOSE);
+        Purchases.setLogLevel(LOG_LEVEL.DEBUG);
     
         if (Platform.OS === 'ios') {
            Purchases.configure({apiKey: "appl_ScXuRrRgmmQzOxyXwbKlMzBpggx"});
