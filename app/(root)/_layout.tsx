@@ -6,28 +6,17 @@ import Purchases, {LOG_LEVEL} from "react-native-purchases";
 import { Platform } from "react-native";
 import { useEffect } from "react";
 import RevenueCatUI, { PAYWALL_RESULT } from "react-native-purchases-ui";
+import { GlobalProvider } from '@/lib/global-provider';
 
-async function presentPaywall(): Promise<boolean> {
+async function presentPaywallIfNeeded() {
     // Present paywall for current offering:
-    const paywallResult: PAYWALL_RESULT = await RevenueCatUI.presentPaywall();
-    // Note: To present a specific offering, use:
-    // const paywallResult: PAYWALL_RESULT = await RevenueCatUI.presentPaywall({ offering: offering });
-
-    switch (paywallResult) {
-        case PAYWALL_RESULT.NOT_PRESENTED:
-        case PAYWALL_RESULT.ERROR:
-        case PAYWALL_RESULT.CANCELLED:
-            return false;
-        case PAYWALL_RESULT.PURCHASED:
-        case PAYWALL_RESULT.RESTORED:
-            return true;
-        default:
-            return false;
-    }
+    const paywallResult: PAYWALL_RESULT = await RevenueCatUI.presentPaywallIfNeeded({
+        requiredEntitlementIdentifier: "entla0ee6b744d"
+    });
 }
 
 export default function RootLayout() {
-    const {loading, isLoggedIn} = useGlobalContext();
+    const {loading, isLoggedIn, user} = useGlobalContext();
 
     useEffect(() => {
         Purchases.setLogLevel(LOG_LEVEL.DEBUG);
@@ -53,9 +42,8 @@ export default function RootLayout() {
     if(!isLoggedIn) {
         return <Redirect href="/sign-in" />
     }
-    else{
-        presentPaywall();
+    else {
+        presentPaywallIfNeeded();   
+        return <Slot />;
     }
-
-    //return <Slot />;
 }

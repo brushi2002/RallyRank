@@ -168,6 +168,8 @@ const styles = StyleSheet.create({
     paddingLeft: 16,
     borderRadius: 8,
     backgroundColor: '#F9FAFB',
+    color: '#000000',
+  
   },
 });
 
