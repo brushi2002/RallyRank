@@ -22,6 +22,14 @@ export default function CreateLadder() {
 
 
   const handleCreateLadder = async () => {
+
+    const regex = /^[A-Z0-9]{4}$/;
+    if(!regex.test(ladderCode))
+    {
+      Alert.alert('Error', 'Please enter a valid ladder code. Must be 4 Characters long and only contain A-Z or 0-9');
+      return;
+    }
+
     if (!ladderName.trim()) {
       Alert.alert('Error', 'Please enter a ladder name');
       return;
@@ -38,7 +46,7 @@ export default function CreateLadder() {
         CreateDate: new Date().toISOString(),
       });
 
-      console.log('Ladder created:', response);
+      console.log('Ladder created: Please share this code with your friends to join the ladder', response);
       
       Alert.alert(
         'Success',

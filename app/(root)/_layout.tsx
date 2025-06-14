@@ -18,18 +18,18 @@ async function presentPaywallIfNeeded() {
 export default function RootLayout() {
     const {loading, isLoggedIn, user} = useGlobalContext();
 
-    useEffect(() => {
-        Purchases.setLogLevel(LOG_LEVEL.DEBUG);
+    //useEffect(() => {
+    //    Purchases.setLogLevel(LOG_LEVEL.DEBUG);
     
-        if (Platform.OS === 'ios') {
-           Purchases.configure({apiKey: "appl_ScXuRrRgmmQzOxyXwbKlMzBpggx"});
-        } 
+    //    if (Platform.OS === 'ios') {
+    //       Purchases.configure({apiKey: "appl_ScXuRrRgmmQzOxyXwbKlMzBpggx"});
+    //    } 
         //tbd add support for android else if (Platform.OS === 'android') {
         //   Purchases.configure({apiKey: <revenuecat_project_google_api_key>});
     
         //}
     
-      }, []);
+    //  }, []);
 
     if(loading) {
         return (
@@ -43,7 +43,7 @@ export default function RootLayout() {
         return <Redirect href="/sign-in" />
     }
     else {
-        presentPaywallIfNeeded();   
+      //  presentPaywallIfNeeded();   
         return <Slot />;
     }
 }
