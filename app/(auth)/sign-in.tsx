@@ -160,7 +160,7 @@ const SignIn = () => {
 }
 
 const styles = StyleSheet.create({
-  input: {
+  textInput: {
     height: 50,
     borderColor: '#E5E7EB',
     borderWidth: 1,
