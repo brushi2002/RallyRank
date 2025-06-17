@@ -78,7 +78,7 @@ export default function CreateLadder() {
      {
         return;
      }
-     if(typeof customerInfo.entitlements.active["Single Purchase"] !== "undefined")
+     if(typeof customerInfo.entitlements.active["entla0ee6b744d"] !== "undefined")
      {
         // Grant user "pro" access
         console.log('User has access to create ladders');
@@ -97,8 +97,6 @@ export default function CreateLadder() {
             LadderCode: data.LadderCode,
             CreateDate: new Date().toISOString(),
           });
-
-
 
           const result = await registerUser(data.Email, data.Password, data.LadderName, data.LadderCode, data.PhoneNumber);
     
