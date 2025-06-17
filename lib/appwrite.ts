@@ -40,15 +40,13 @@ import { InteractionManagerStatic } from "react-native";
   export const databases = new Databases(client);
   export const storage = new Storage(client);
 
-  export async function registerUser(email: string, password: string, name: string, leagueCode: string) {
+  export async function registerUser(email: string, password: string, name: string, leagueCode: string, phoneNumber: string) {
     //tbd - look the league ID up or take selectio
-    
-
     try{
 
       const lgresult = await databases.listDocuments(
         config.databaseId!,
-        config.leagueCollectionId!, [Query.equal('league_code', leagueCode)]);
+        config.leagueCollectionId!, [Query.equal('LadderCode', leagueCode)]);
 
       if(lgresult.documents.length == 0){
         console.log("no league found")
@@ -70,6 +68,7 @@ import { InteractionManagerStatic } from "react-native";
         {
           name: name,
           email: email,
+          phoneNumber: phoneNumber,
         }
       );
       const playerId = result.$id
@@ -98,6 +97,16 @@ import { InteractionManagerStatic } from "react-native";
     return loggedIn;
 
     
+  }
+
+  export async function doesLadderCodeExist(ladderCode: string) {
+    const result = await databases.listDocuments(config.databaseId!, config.leagueCollectionId!, [Query.equal('LadderCode', ladderCode)]);
+    return result.documents.length > 0;
+  }
+
+  export async function doesEmailExist(email: string) {
+    const result = await databases.listDocuments(config.databaseId!, config.playerCollectionId!, [Query.equal('email', email)]);
+    return result.documents.length > 0;
   }
   
   export async function login() {

@@ -199,6 +199,21 @@ const Register = () => {
               </Text>
             </Text>
           </View>
+          {/* Create a Ladder */}
+            <View className="mt-6">
+              <Text className="text-center text-gray-600">
+                No League Code? 
+              </Text>
+              <Text className="text-center text-gray-600">
+                Subscribe and Create a Ladder
+              </Text>
+              <Text 
+                className="text-blue-500 font-semibold text-center"
+                onPress={() => router.push('/(auth)/CreateLadder')}
+              >
+                Create a new Ladder
+              </Text>
+          </View>
         </View>
       </ScrollView>
     </SafeAreaView>

@@ -6,8 +6,9 @@ import { useGlobalContext } from '@/lib/global-provider'
 import { Redirect, router } from 'expo-router'
 import { Controller, useForm } from 'react-hook-form'
 import Carousel from 'react-native-reanimated-carousel'
+import Purchases, {LOG_LEVEL} from "react-native-purchases";
 
-const SignIn = () => {
+const SignIn = ({showHeaderImage = true}: {showHeaderImage?: boolean}) => {
   const { refetch, loading, isLoggedIn } = useGlobalContext();
   const [isLoading, setIsLoading] = useState(false);
   const width = Dimensions.get('window').width;
@@ -48,10 +49,10 @@ const SignIn = () => {
     <SafeAreaView className="bg-white flex-1">
       <ScrollView pointerEvents="box-none" className="flex-1">
       {/* Welcome Text */}
+      {showHeaderImage && (
       <View className="flex-col items-center mt-8 mb-4">
-  <Text className="text-base text-black">Welcome to</Text>
-  <Text className="text-3xl font-bold" style={{ color: '#2E8B57' }}>Rally Rank</Text>
-</View>
+        <Text className="text-base text-black">Welcome to</Text>
+        <Text className="text-3xl font-bold" style={{ color: '#2E8B57' }}>Rally Rank</Text>
 
         {/* Carousel */}
         <View className="h-48 mb-8">
@@ -72,7 +73,9 @@ const SignIn = () => {
               </View>
             )}
           />
+        </View> 
         </View>
+        )}
 
         {/* Login Form */}
         <View className="px-8">
@@ -92,7 +95,7 @@ const SignIn = () => {
             }}
             render={({ field: { onChange, onBlur, value } }) => (
               <TextInput
-                style={styles.input}
+                style={styles.textInput}
                 onBlur={onBlur}
                 onChangeText={onChange}
                 value={value}
@@ -116,7 +119,7 @@ const SignIn = () => {
             }}
             render={({ field: { onChange, onBlur, value } }) => (
               <TextInput
-                style={styles.input}
+                style={styles.textInput}
                 onBlur={onBlur}
                 onChangeText={onChange}
                 value={value}
@@ -140,7 +143,6 @@ const SignIn = () => {
               {isLoading ? 'Logging in...' : 'Login'}
             </Text>
           </TouchableOpacity>
-
           {/* Sign Up Link */}
           <View className="mt-6">
             <Text className="text-center text-gray-600">
