@@ -1,7 +1,7 @@
 import { View, Text, ScrollView, Alert, TouchableOpacity, StyleSheet, TextInput } from 'react-native'
 import React, { useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import { registerUser } from '@/lib/appwrite'
+import { registerUser, doesLadderCodeExist, doesEmailExist } from '@/lib/appwrite'
 import { useGlobalContext } from '@/lib/global-provider'
 import { Redirect, router } from 'expo-router'
 import { Controller, useForm } from 'react-hook-form'
@@ -16,13 +16,32 @@ const Register = () => {
     Email: string;
     Password: string;
     Name: string;
-    LeagueCode: string;
+    LadderCode: string;
+    PhoneNumber: string;
   }
 
-  const { control, handleSubmit, formState: { errors } } = useForm<FormData>({mode: 'onChange'});
+  const { control, handleSubmit, formState: { errors }, setError } = useForm<FormData>({mode: 'onChange'});
 
   if (!loading && isLoggedIn) {
     return <Redirect href="/" />;
+  }
+
+  const serverValidation = async (data: FormData, errors: any) => {
+    console.log('Running Sever side Validations')
+    try{
+      if(!await doesLadderCodeExist(data.LadderCode)) {
+        setError('LadderCode', {message: 'Ladder Code does not exist'});
+        return false;
+      }
+      if(await doesEmailExist(data.Email)) {
+        setError('Email', {message: 'Email already exists'});
+        return false;
+      }
+      return true;
+    }
+    catch(error){
+      console.log('Error running server side validations', error);
+    }
   }
 
   const handleRegister = async (data: FormData) => {
@@ -30,16 +49,13 @@ const Register = () => {
     console.log('Register attempt with:', data);
     
     try {
+      if(!await serverValidation(data, errors)) {
+        return;
+      }
       setIsLoading(true);
       const regex = /^([a-zA-Z0-9]{5})$/;
 
-      if(!regex.test(data.LeagueCode)){
-        console.log('yep');
-        setLeagueCode('Invalid League Code. Please try again or Leave Blank.');
-        return;
-      }
-
-      const result = await registerUser(data.Email, data.Password, data.Name, data.LeagueCode);
+      const result = await registerUser(data.Email, data.Password, data.Name, data.LadderCode, data.PhoneNumber);
 
       if(result == null){
         setLeagueCode('Invalid League Code. Please try again.');
@@ -69,16 +85,16 @@ const Register = () => {
         <Text className="text-xl text-center text-gray-700 mt-4 mb-8">
           Create Your Account
         </Text>
-
-        <View className="px-8">
+        <View className="mb-4">
+        <Text className="text-gray-700 font-medium mb-1">Full Name</Text>
           <Controller
             control={control}
             name="Name"
             rules={{
               required: 'Name is Required',
               minLength: {
-                value: 2,
-                message: 'Name must be at least 2 characters'
+                value: 6,
+                message: 'Name must be at least 6 characters'
               }
             }}
             render={({ field: { onChange, onBlur, value } }) => (
@@ -96,7 +112,11 @@ const Register = () => {
               {errors.Name.message}
             </Text>
           )}
+          </View>
 
+
+      <View className="mb-4">
+        <Text className="text-gray-700 font-medium mb-1">Email</Text>
           <Controller
             control={control}
             name="Email"
@@ -124,7 +144,41 @@ const Register = () => {
               {errors.Email.message}
             </Text>
           )}
+        <View className="mb-4">
+        <Text className="text-gray-700 font-medium mb-1">Phone Number</Text>
+        <Controller
+            control={control}
+            name="PhoneNumber"
+            rules={{
+              pattern: {
+                value: /^[2-9]\d{9}$/,
+                message: "Invalid Phone Number. Format: 9876543210"
+              },
+              required: 'Phone Number is Required',
+              minLength: {
+                value: 10,
+                message: 'Phone Number must be at least 10 characters'
+              }
 
+            }}
+            render={({ field: { onChange, onBlur, value } }) => (
+              <TextInput
+                style={styles.input}
+                onBlur={onBlur}
+                onChangeText={onChange}
+                value={value}
+                placeholder="PhoneNumber"
+              />
+            )}
+          />
+          {errors.PhoneNumber && (
+            <Text className="text-red-500 mb-2">
+              {errors.PhoneNumber.message}
+            </Text>
+          )}
+        </View>
+        <View className="mb-4">
+        <Text className="text-gray-700 font-medium mb-1">Password</Text>
           <Controller
             control={control}
             name="Password"
@@ -151,14 +205,18 @@ const Register = () => {
               {errors.Password.message}
             </Text>
           )}
+          </View>
 
+          <View className="mb-4">
+          <Text className="text-gray-700 font-medium mb-1">Ladder Code (for Inviting Members)</Text>
           <Controller
             control={control}
-            name="LeagueCode"
+            name="LadderCode"
             rules={{
+              required: 'Ladder Code is Required',
               minLength: {
-                value: 5,
-                message: 'League Code must be 5 characters'
+                value: 4,
+                message: 'Ladder Code must be 4 Characters long'
               }
             }}
             render={({ field: { onChange, onBlur, value } }) => (
@@ -167,15 +225,17 @@ const Register = () => {
                 onBlur={onBlur}
                 onChangeText={onChange}
                 value={value}
-                placeholder="League Code (Must be invited)"
+                placeholder="Ladder Code"
+                maxLength={4}
               />
             )}
           />
-          {leagueCode.length > 0 && (
+          {errors.LadderCode && (
             <Text className="text-red-500 mb-2">
-              {leagueCode}
+              {errors.LadderCode.message}
             </Text>
           )}
+          </View>
 
           <TouchableOpacity
             className="bg-gray-200 py-4 rounded-lg mt-4"

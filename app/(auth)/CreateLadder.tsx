@@ -59,7 +59,7 @@ export default function CreateLadder() {
     }
     catch(error){
       console.log('Error running server side validations', error);
-  }
+    }
   }
   //const { user } = useGlobalContext();
   const [ladderName, setLadderName] = useState('');
@@ -73,12 +73,12 @@ export default function CreateLadder() {
     try {
       console.log('***************************************************Checking if user has access to create ladders');
      const customerInfo = await Purchases.getCustomerInfo();
-     console.log('Customer Info:', customerInfo.entitlements.active["entla0ee6b744d"]);
+     console.log('Customer Info:', customerInfo.entitlements);
      if(!await serverValidation(data, errors))
      {
         return;
      }
-     if(typeof customerInfo.entitlements.active["entla0ee6b744d"] !== "undefined")
+     if(typeof customerInfo.entitlements.active["Single Purchase"] !== "undefined")
      {
         // Grant user "pro" access
         console.log('User has access to create ladders');
@@ -336,6 +336,7 @@ export default function CreateLadder() {
                 onChangeText={onChange}
                 value={value}
                 placeholder="Ladder Code"
+                maxLength={4}
               />
             )}
           />

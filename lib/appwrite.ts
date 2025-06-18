@@ -41,7 +41,6 @@ import { InteractionManagerStatic } from "react-native";
   export const storage = new Storage(client);
 
   export async function registerUser(email: string, password: string, name: string, leagueCode: string, phoneNumber: string) {
-    //tbd - look the league ID up or take selectio
     try{
 
       const lgresult = await databases.listDocuments(
@@ -68,7 +67,7 @@ import { InteractionManagerStatic } from "react-native";
         {
           name: name,
           email: email,
-          phoneNumber: phoneNumber,
+          PhoneNumber: phoneNumber,
         }
       );
       const playerId = result.$id
@@ -95,8 +94,6 @@ import { InteractionManagerStatic } from "react-native";
     const loggedIn = await account.createEmailPasswordSession(email, password);
     console.log("Welcome Back, You are logged in");
     return loggedIn;
-
-    
   }
 
   export async function doesLadderCodeExist(ladderCode: string) {
