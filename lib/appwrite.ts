@@ -54,9 +54,18 @@ import { InteractionManagerStatic } from "react-native";
 
       const account = new Account(client);
 
+      console.log('verifying')
+      const promise = account.createVerification('https://example.com/verify');
+
+
       const uniqueId = ID.unique();
 
-      const promise = account.create(uniqueId, email, password);
+      console.log('creating account');
+      const promise2 =  account.create(uniqueId, email, password);
+      
+      //const promise2 = await account.createVerification('https://example.com/verify');
+
+
 
       console.log('yep');
       
@@ -92,6 +101,7 @@ import { InteractionManagerStatic } from "react-native";
 
   export async function loginwithEmail(email: string, password: string) {
     const loggedIn = await account.createEmailPasswordSession(email, password);
+    const promise = account.createVerification('https://example.com/verify');
     console.log("Welcome Back, You are logged in");
     return loggedIn;
   }
@@ -103,6 +113,7 @@ import { InteractionManagerStatic } from "react-native";
 
   export async function doesEmailExist(email: string) {
     const result = await databases.listDocuments(config.databaseId!, config.playerCollectionId!, [Query.equal('email', email)]);
+    console.log(result)
     return result.documents.length > 0;
   }
   
@@ -151,8 +162,9 @@ import { InteractionManagerStatic } from "react-native";
   export async function getCurrentUser() {
     try {
       const result = await account.get();
-      console.log("Appwrite response:", result);
-      console.log(result.labels)
+      //console.log("Appwrite response:", result);
+      //console.log(result.labels)
+      console.log(result.emailVerification)
 
       if (result.$id) {
         const userAvatar = avatar.getInitials(result.name);
@@ -163,6 +175,7 @@ import { InteractionManagerStatic } from "react-native";
           return {
             ...userResult.documents[0],
             labels: result.labels,
+            emailVerified: result.emailVerification,
             leagueinfo: {
               league: {
                 $id: '67f872ec002fad12bdbc',

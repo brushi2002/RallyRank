@@ -2,7 +2,7 @@
   "expo": {
     "name": "Rally Rank",
     "slug": "rally-rank",
-    "version": "1.0.5",
+    "version": "2.0.1",
     "orientation": "portrait",
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
@@ -14,7 +14,7 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.tennisapp.app",
-      "buildNumber": "5",
+      "buildNumber": "1",
       "icon": "./assets/images/icon.png",
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false
