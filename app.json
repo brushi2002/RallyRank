@@ -17,7 +17,8 @@
       "icon": "./assets/images/icon.png",
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false
-      }
+      },
+      "bundleIdentifier": "com.tennisapp.app"
     },
     "android": {
       "versionCode": 4,
