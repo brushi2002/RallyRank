@@ -65,10 +65,7 @@ import { InteractionManagerStatic } from "react-native";
       
       //const promise2 = await account.createVerification('https://example.com/verify');
 
-
-
-      console.log('yep');
-      
+      //Create the player document
       const result = await databases.createDocument(
         config.databaseId!,
         config.playerCollectionId!,
@@ -81,6 +78,7 @@ import { InteractionManagerStatic } from "react-native";
       );
       const playerId = result.$id
 
+      //Create the member document
       const result2 = await databases.createDocument(
         config.databaseId!,
         config.memberCollectionId!,
@@ -99,9 +97,34 @@ import { InteractionManagerStatic } from "react-native";
     }
   }
 
+  export async function verifyEmail(email: string, password: string) {
+
+    const promise = account.createVerification('myapp://');
+
+    promise.then(function (response) {
+      console.log(response); // Success
+    }, function (error) {
+      console.log(error); // Failure
+    });
+  }
+
+  export async function markEmailVerified(userId: string, secret: string) {
+    const promise = account.updateVerification(userId, secret);
+  }
+
   export async function loginwithEmail(email: string, password: string) {
     const loggedIn = await account.createEmailPasswordSession(email, password);
-    const promise = account.createVerification('https://example.com/verify');
+    if(loggedIn)
+    {
+      verifyEmail(email, password);
+      //console.log("Sending Email Verification")
+      //const promise = account.createVerification('myapp://');
+      //promise.then(function (response) {
+      //  console.log(response); // Success
+      //}, function (error) {
+      //  console.log(error); // Failure
+      //});
+    }
     console.log("Welcome Back, You are logged in");
     return loggedIn;
   }

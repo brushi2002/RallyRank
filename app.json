@@ -13,7 +13,6 @@
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.tennisapp.app",
       "buildNumber": "1",
       "icon": "./assets/images/icon.png",
       "infoPlist": {

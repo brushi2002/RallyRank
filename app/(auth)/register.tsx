@@ -1,7 +1,7 @@
 import { View, Text, ScrollView, Alert, TouchableOpacity, StyleSheet, TextInput } from 'react-native'
 import React, { useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import { registerUser, doesLadderCodeExist, doesEmailExist } from '@/lib/appwrite'
+import { registerUser, doesLadderCodeExist, doesEmailExist, verifyEmail } from '@/lib/appwrite'
 import { useGlobalContext } from '@/lib/global-provider'
 import { Redirect, router } from 'expo-router'
 import { Controller, useForm } from 'react-hook-form'
@@ -56,7 +56,7 @@ const Register = () => {
       const regex = /^([a-zA-Z0-9]{5})$/;
 
       const result = await registerUser(data.Email, data.Password, data.Name, data.LadderCode, data.PhoneNumber);
-
+      await verifyEmail(data.Email, data.Password);
       if(result == null){
         setLeagueCode('Invalid League Code. Please try again.');
         return;
