@@ -6,7 +6,7 @@ import {
     OAuthProvider,
     Avatars,
     Query,
-    Storage
+   Storage
   } from "react-native-appwrite";
   import * as Linking from "expo-linking";
   import { openAuthSessionAsync } from "expo-web-browser";
@@ -97,9 +97,9 @@ import { InteractionManagerStatic } from "react-native";
     }
   }
 
-  export async function verifyEmail(email: string, password: string) {
+  export async function verifyEmail(email: string) {
 
-    const promise = account.createVerification('myapp://');
+    const promise = account.createVerification('https://rallyrankemailpwverify.appwrite.network/verify');
 
     promise.then(function (response) {
       console.log(response); // Success
@@ -114,17 +114,6 @@ import { InteractionManagerStatic } from "react-native";
 
   export async function loginwithEmail(email: string, password: string) {
     const loggedIn = await account.createEmailPasswordSession(email, password);
-    if(loggedIn)
-    {
-      verifyEmail(email, password);
-      //console.log("Sending Email Verification")
-      //const promise = account.createVerification('myapp://');
-      //promise.then(function (response) {
-      //  console.log(response); // Success
-      //}, function (error) {
-      //  console.log(error); // Failure
-      //});
-    }
     console.log("Welcome Back, You are logged in");
     return loggedIn;
   }
@@ -210,6 +199,7 @@ import { InteractionManagerStatic } from "react-native";
         return {
           ...userResult.documents[0],
           labels: result.labels,
+          emailVerified: result.emailVerification,
           leagueinfo: leagueMembership.documents[0]
         };
       }

@@ -56,7 +56,7 @@ const Register = () => {
       const regex = /^([a-zA-Z0-9]{5})$/;
 
       const result = await registerUser(data.Email, data.Password, data.Name, data.LadderCode, data.PhoneNumber);
-      await verifyEmail(data.Email, data.Password);
+      await verifyEmail(data.Email);
       if(result == null){
         setLeagueCode('Invalid League Code. Please try again.');
         return;

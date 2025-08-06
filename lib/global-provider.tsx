@@ -16,6 +16,7 @@ interface User {
     email: string;
     avatar: string;
     PhoneNumber: string;
+    emailVerified: boolean;
     labels?: string[];
     leagueinfo: Record<string, any>
 }
