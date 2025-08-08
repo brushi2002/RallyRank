@@ -20,7 +20,10 @@
     },
     "production": {
       "autoIncrement": true,
-      "environment": "production"
+      "environment": "production",
+      "env": {
+        "NODE_ENV": "production"
+      }
     },
     "development-simulator": {
       "developmentClient": true,
