@@ -7,8 +7,8 @@ module.exports = function (api) {
           {
             jsxImportSource: 'nativewind',
           },
-        ],
-      ],
+        ], ['module:metro-react-native-babel-preset'],
+      ], 
       plugins: [
         [
           'module-resolver',
