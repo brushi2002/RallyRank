@@ -12,13 +12,13 @@ import './global.css';
 import { useColorScheme } from '@/hooks/useColorScheme';
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
-//SplashScreen.preventAutoHideAsync();
+// SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
   return (
     <GlobalProvider>
       <Stack screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="(root)" />
+      <Stack.Screen name="(root)" />
       </Stack>
     </GlobalProvider>
   );

@@ -34,7 +34,9 @@ export const GlobalProvider = ({children}:{children: React.ReactNode}) => {
         data: user,
         loading,
         refetch 
-    } = useAppwrite({fn: getCurrentUser,
+    } = useAppwrite({
+        fn: getCurrentUser,
+        skip: false // Allow this to run, but handle errors gracefully
     });
 
     console.log("User Info****", user);

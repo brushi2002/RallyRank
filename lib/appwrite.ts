@@ -12,23 +12,29 @@ import {
   import { openAuthSessionAsync } from "expo-web-browser";
 import { InteractionManagerStatic } from "react-native";
   
-  if (!process.env.EXPO_PUBLIC_APPWRITE_ENDPOINT || !process.env.EXPO_PUBLIC_APPWRITE_PROJECT_ID) {
-    throw new Error('Missing required Appwrite configuration. Please check your environment variables.');
-  }
+  // Environment variables will be checked when actually used
+  // This allows the app to start even if env vars are not set
   
   export const config = {
     platform: "com.ladderlink.tennisapp",
-    endpoint: process.env.EXPO_PUBLIC_APPWRITE_ENDPOINT,
-    projectId: process.env.EXPO_PUBLIC_APPWRITE_PROJECT_ID,
-    databaseId: process.env.EXPO_PUBLIC_APPWRITE_DATABASE_ID,
-    playerCollectionId: process.env.EXPO_PUBLIC_APPWRITE_PLAYER_COLLECTION_ID,
-    memberCollectionId: process.env.EXPO_PUBLIC_APPWRITE_MEMBER_COLLECTION_ID,
-    matchCollectionId: process.env.EXPO_PUBLIC_APPWRITE_MATCH_COLLECTION_ID,
-    leagueCollectionId: process.env.EXPO_PUBLIC_APPWRITE_LEAGUE_COLLECTION_ID,
-    globalLeagueId: process.env.EXPO_PUBLIC_APPWRITE_GLOBAL_LEAGUE_ID,
-    storageId: process.env.EXPO_PUBLIC_APPWRITE_STORAGE_ID
+    endpoint: process.env.EXPO_PUBLIC_APPWRITE_ENDPOINT || 'https://cloud.appwrite.io/v1',
+    projectId: process.env.EXPO_PUBLIC_APPWRITE_PROJECT_ID || 'your-project-id',
+    databaseId: process.env.EXPO_PUBLIC_APPWRITE_DATABASE_ID || 'your-database-id',
+    playerCollectionId: process.env.EXPO_PUBLIC_APPWRITE_PLAYER_COLLECTION_ID || 'your-player-collection-id',
+    memberCollectionId: process.env.EXPO_PUBLIC_APPWRITE_MEMBER_COLLECTION_ID || 'your-member-collection-id',
+    matchCollectionId: process.env.EXPO_PUBLIC_APPWRITE_MATCH_COLLECTION_ID || 'your-match-collection-id',
+    leagueCollectionId: process.env.EXPO_PUBLIC_APPWRITE_LEAGUE_COLLECTION_ID || 'your-league-collection-id',
+    globalLeagueId: process.env.EXPO_PUBLIC_APPWRITE_GLOBAL_LEAGUE_ID || 'your-global-league-id',
+    storageId: process.env.EXPO_PUBLIC_APPWRITE_STORAGE_ID || 'your-storage-id'
   };
   
+  // Validation function to check if environment variables are properly set
+  const validateAppwriteConfig = () => {
+    if (!process.env.EXPO_PUBLIC_APPWRITE_ENDPOINT || !process.env.EXPO_PUBLIC_APPWRITE_PROJECT_ID) {
+      throw new Error('Missing required Appwrite configuration. Please set up your environment variables in .env file.');
+    }
+  };
+
   export const client = new Client();
   client
     .setEndpoint(config.endpoint)
@@ -42,6 +48,7 @@ import { InteractionManagerStatic } from "react-native";
 
   export async function registerUser(email: string, password: string, name: string, leagueCode: string, phoneNumber: string) {
     try{
+      validateAppwriteConfig();
 
       const lgresult = await databases.listDocuments(
         config.databaseId!,
@@ -173,6 +180,7 @@ import { InteractionManagerStatic } from "react-native";
   
   export async function getCurrentUser() {
     try {
+      validateAppwriteConfig();
       const result = await account.get();
       //console.log("Appwrite response:", result);
       //console.log(result.labels)
