@@ -47,7 +47,7 @@
     "metro": "^0.82.0",
     "mime": "2.6.0",
     "nativewind": "^4.1.23",
-    "react": "19.0.0",
+    "react": "^19.0.0",
     "react-dom": "19.0.0",
     "react-hook-form": "^7.54.2",
     "react-native": "0.79.5",
