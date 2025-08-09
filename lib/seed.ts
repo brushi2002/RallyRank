@@ -8,10 +8,15 @@ import {
 } from "@/lib/data";
 
 const COLLECTIONS = {
-  AGENT: config.agentsCollectionId,
-  REVIEWS: config.reviewsCollectionId,
-  GALLERY: config.galleriesCollectionId,
-  PROPERTY: config.propertiesCollectionId,
+  // These collections are not defined in the current config
+  // AGENT: config.agentsCollectionId,
+  // REVIEWS: config.reviewsCollectionId,
+  // GALLERY: config.galleriesCollectionId,
+  // PROPERTY: config.propertiesCollectionId,
+  PLAYER: config.playerCollectionId,
+  MEMBER: config.memberCollectionId,
+  MATCH: config.matchCollectionId,
+  LEAGUE: config.leagueCollectionId,
 };
 
 const propertyTypes = [
@@ -92,7 +97,8 @@ async function seed() {
     for (let i = 1; i <= 5; i++) {
       const agent = await databases.createDocument(
         config.databaseId!,
-        COLLECTIONS.AGENT!,
+        // COLLECTIONS.AGENT! // Collection not defined
+        config.playerCollectionId!,
         ID.unique(),
         {
           name: `Agent ${i}`,
@@ -109,7 +115,8 @@ async function seed() {
     for (let i = 1; i <= 20; i++) {
       const review = await databases.createDocument(
         config.databaseId!,
-        COLLECTIONS.REVIEWS!,
+        // COLLECTIONS.REVIEWS! // Collection not defined
+        config.playerCollectionId!,
         ID.unique(),
         {
           name: `Reviewer ${i}`,
@@ -127,7 +134,8 @@ async function seed() {
     for (const image of galleryImages) {
       const gallery = await databases.createDocument(
         config.databaseId!,
-        COLLECTIONS.GALLERY!,
+        // COLLECTIONS.GALLERY! // Collection not defined
+        config.playerCollectionId!,
         ID.unique(),
         { image }
       );
@@ -159,7 +167,8 @@ async function seed() {
 
       const property = await databases.createDocument(
         config.databaseId!,
-        COLLECTIONS.PROPERTY!,
+        // COLLECTIONS.PROPERTY! // Collection not defined
+        config.playerCollectionId!,
         ID.unique(),
         {
           name: `Property ${i}`,

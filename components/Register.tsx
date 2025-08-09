@@ -14,6 +14,8 @@ const Register = () => {
     Email: string;
     Password: string;
     Name: string;
+    LeagueCode: string;
+    PhoneNumber: string;
   }
 
   const { control, handleSubmit, formState: { errors } } = useForm<FormData>({mode: 'onChange'});
@@ -28,7 +30,7 @@ const Register = () => {
     
     try {
       setIsLoading(true);
-      await registerUser(data.Email, data.Password, data.Name);
+      await registerUser(data.Email, data.Password, data.Name, data.LeagueCode, data.PhoneNumber);
       Alert.alert('Success', 'Registration successful! Please login.');
     } catch (error) {
       console.error('Registration error:', error);
@@ -130,6 +132,59 @@ const Register = () => {
           {errors.Password && (
             <Text className="text-red-500">
               {errors.Password.message}
+            </Text>
+          )}
+
+          <Controller
+            control={control}
+            name="LeagueCode"
+            rules={{
+              required: 'League Code is Required',
+              minLength: {
+                value: 3,
+                message: 'League Code must be at least 3 characters'
+              }
+            }}
+            render={({ field: { onChange, onBlur, value } }) => (
+              <TextInput
+                style={styles.input}
+                onBlur={onBlur}
+                onChangeText={onChange}
+                value={value}
+                placeholder="League Code"
+              />
+            )}
+          />
+          {errors.LeagueCode && (
+            <Text className="text-red-500">
+              {errors.LeagueCode.message}
+            </Text>
+          )}
+
+          <Controller
+            control={control}
+            name="PhoneNumber"
+            rules={{
+              required: 'Phone Number is Required',
+              pattern: {
+                value: /^[\+]?[1-9][\d]{0,15}$/,
+                message: "Invalid phone number format"
+              }
+            }}
+            render={({ field: { onChange, onBlur, value } }) => (
+              <TextInput
+                style={styles.input}
+                onBlur={onBlur}
+                onChangeText={onChange}
+                value={value}
+                placeholder="Phone Number"
+                keyboardType="phone-pad"
+              />
+            )}
+          />
+          {errors.PhoneNumber && (
+            <Text className="text-red-500">
+              {errors.PhoneNumber.message}
             </Text>
           )}
 

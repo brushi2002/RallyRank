@@ -67,11 +67,15 @@
   "devDependencies": {
     "@babel/core": "^7.25.2",
     "@babel/preset-env": "^7.1.6",
+    "@testing-library/react-native": "^13.2.2",
     "@types/jest": "^29.5.12",
     "@types/react": "~19.0.10",
     "@types/react-native": "^0.73.0",
+    "@types/react-test-renderer": "^19.1.0",
     "autoprefixer": "^10.4.21",
+    "jest-expo": "^53.0.9",
     "postcss": "^8.5.3",
+    "react-test-renderer": "^19.1.1",
     "typescript": "^5.3.3"
   },
   "expo": {

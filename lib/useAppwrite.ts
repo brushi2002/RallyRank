@@ -11,7 +11,7 @@ interface UseAppwriteReturn<T, P> {
   data: T | null;
   loading: boolean;
   error: string | null;
-  refetch: (newParams: P) => Promise<void>;
+  refetch: (newParams?: P) => Promise<void>;
 }
 
 export const useAppwrite = <T, P extends Record<string, string | number>>({
@@ -50,7 +50,7 @@ export const useAppwrite = <T, P extends Record<string, string | number>>({
     }
   }, []);
 
-  const refetch = async (newParams: P) => await fetchData(newParams || params);
+  const refetch = async (newParams?: P) => await fetchData(newParams || params);
 
   return { data, loading, error, refetch };
 }

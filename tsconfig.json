@@ -15,6 +15,7 @@
     "**/*.tsx",
     ".expo/types/**/*.ts",
     "expo-env.d.ts",
-    "nativewind-env.d.ts"
-, "lib/global-provider.ts_old"  ]
+    "nativewind-env.d.ts",
+    "lib/global-provider.ts_old"
+  ]
 }
