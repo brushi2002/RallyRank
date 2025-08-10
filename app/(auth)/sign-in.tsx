@@ -9,7 +9,6 @@ import { Controller, useForm } from 'react-hook-form'
 import Carousel from 'react-native-reanimated-carousel'
 import Purchases, {LOG_LEVEL} from "react-native-purchases";
 
-
 const SignIn = ({showHeaderImage = true}: {showHeaderImage?: boolean}) => {
   const { refetch, loading, isLoggedIn } = useGlobalContext();
   const [isLoading, setIsLoading] = useState(false);
@@ -158,6 +157,16 @@ const SignIn = ({showHeaderImage = true}: {showHeaderImage?: boolean}) => {
             </Text>
           </View>
         </View>
+        <View>
+          </View>
+      {/* Your login form */}
+      
+      {/* Debug info - remove in production */}
+      <View style={{ padding: 10, backgroundColor: 'yellow' }}>
+        <Text>Debug Info:</Text>
+        <Text>Endpoint: {process.env.EXPO_PUBLIC_APPWRITE_ENDPOINT || 'NOT SET'}</Text>
+        <Text>Project: {process.env.EXPO_PUBLIC_APPWRITE_PROJECT_ID || 'NOT SET'}</Text>
+      </View>
       </ScrollView>
     </SafeAreaView>
   );
