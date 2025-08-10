@@ -17,9 +17,9 @@ const SignIn = ({showHeaderImage = true}: {showHeaderImage?: boolean}) => {
   
   // Sample images for the carousel - using existing images for now
   const images = [
-    require('@/assets/images/tennis1.jpg'),
-    require('@/assets/images/tennis2.jpg'),
-    require('@/assets/images/tennis3.jpg'),
+    require('../../assets/images/tennis1.jpg'),
+    require('../../assets/images/tennis2.jpg'),
+    require('../../assets/images/tennis3.jpg'),
   ];
 
   interface FormData {
