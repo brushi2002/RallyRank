@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { View, StyleSheet, ActivityIndicator, Button, ScrollView, TouchableOpacity, Linking, Image } from 'react-native';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
-import { useGlobalContext } from '@/lib/global-provider';
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
-import { IconSymbol, IconSymbolName } from '@/components/ui/IconSymbol';
+import { useGlobalContext } from '../../../lib/global-provider';
+import { ThemedText } from '../../../components/ThemedText';
+import { ThemedView } from '../../../components/ThemedView';
+import { IconSymbol, IconSymbolName } from '../../../components/ui/IconSymbol';
 import { Models } from 'react-native-appwrite';
-import { account } from '../../lib/appwrite';
+import { account } from '../../../lib/appwrite';
 import { router } from 'expo-router';
 import * as ImagePicker from 'expo-image-picker';
 

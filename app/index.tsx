@@ -1,5 +1,5 @@
 import { Redirect } from 'expo-router';
-import { useGlobalContext } from '@/lib/global-provider';
+import { useGlobalContext } from '../lib/global-provider';
 import { ActivityIndicator, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
