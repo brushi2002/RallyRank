@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, ScrollView, Modal, Platform, StyleSheet, TextInput } from 'react-native';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { Picker } from '@react-native-picker/picker';
-import { getPlayers, createMatchResult, config } from '@/lib/appwrite';
+import { getPlayers, createMatchResult, config } from '../../lib/appwrite';
 import { useAppwrite } from '@/lib/useAppwrite';
 import { GlobalProvider, useGlobalContext } from '@/lib/global-provider';
 import { useFocusEffect } from '@react-navigation/native';

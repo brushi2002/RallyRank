@@ -5,10 +5,10 @@ import { Slot, Redirect } from "expo-router";
 import { Platform } from "react-native";
 import React, { useEffect, useRef } from "react";
 import RevenueCatUI, { PAYWALL_RESULT } from "react-native-purchases-ui";
-import { GlobalProvider } from '@/lib/global-provider';
+import { GlobalProvider } from '../../lib/global-provider';
 import { Text, View } from "react-native";
-import { verifyEmail, getCurrentUser } from "@/lib/appwrite";
-import { account } from "@/lib/appwrite";
+import { verifyEmail, getCurrentUser } from "../../lib/appwrite";
+import { account } from "../../lib/appwrite";
 import { router } from 'expo-router';
 import { useFocusEffect } from '@react-navigation/native';
 

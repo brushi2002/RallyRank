@@ -2,7 +2,7 @@ import { View, Text, ScrollView, Image, Alert, TouchableOpacity, StyleSheet, Tex
 import * as React from 'react'
 import { useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import { loginwithEmail } from '@/lib/appwrite'
+import { loginwithEmail } from '../../lib/appwrite'
 import { useGlobalContext } from '@/lib/global-provider'
 import { Redirect, router } from 'expo-router'
 import { Controller, useForm } from 'react-hook-form'

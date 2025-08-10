@@ -1,7 +1,7 @@
 import { View, Text, ScrollView, Alert, TouchableOpacity, StyleSheet, TextInput } from 'react-native'
 import React, { useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import { registerUser, doesLadderCodeExist, doesEmailExist, verifyEmail } from '@/lib/appwrite'
+import { registerUser, doesLadderCodeExist, doesEmailExist, verifyEmail } from '../../lib/appwrite'
 import { useGlobalContext } from '@/lib/global-provider'
 import { Redirect, router } from 'expo-router'
 import { Controller, useForm } from 'react-hook-form'

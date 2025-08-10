@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { useAppwrite } from '@/lib/useAppwrite';
-import { getAllMatchResults, getMatchResultsForLeague } from '@/lib/appwrite';
+import { getAllMatchResults, getMatchResultsForLeague } from '../../lib/appwrite';
 import { Models } from 'react-native-appwrite';
 import { useState, useEffect } from 'react';
 import { useGlobalContext, GlobalProvider } from '@/lib/global-provider';

@@ -6,7 +6,7 @@ import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { IconSymbol, IconSymbolName } from '@/components/ui/IconSymbol';
 import { Models } from 'react-native-appwrite';
-import { account } from '@/lib/appwrite';
+import { account } from '../../lib/appwrite';
 import { router } from 'expo-router';
 import * as ImagePicker from 'expo-image-picker';
 

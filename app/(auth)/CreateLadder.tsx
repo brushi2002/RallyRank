@@ -2,12 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, TouchableOpacity, ScrollView, Alert, ActivityIndicator, Platform, StyleSheet } from 'react-native';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
-import { createLadder, databases } from '@/lib/appwrite';
+import { createLadder, databases } from '../../lib/appwrite';
 import { ID } from 'appwrite';
 import { GlobalProvider, useGlobalContext } from '@/lib/global-provider';
 import Purchases, {LOG_LEVEL} from "react-native-purchases";
 import RevenueCatUI, { PAYWALL_RESULT } from "react-native-purchases-ui";
-import { registerUser, doesLadderCodeExist, doesEmailExist } from '@/lib/appwrite'
+import { registerUser, doesLadderCodeExist, doesEmailExist } from '../../lib/appwrite'
 import { Controller, useForm } from 'react-hook-form';
 
 interface FormData {
