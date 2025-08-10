@@ -119,6 +119,40 @@ import { InteractionManagerStatic, Alert } from "react-native";
     const promise = account.updateVerification(userId, secret);
   }
 
+  export const checkActiveSession = async () => {
+    try {
+      const session = await account.getSession('current'); // Get the current session
+      return session !== null; // Return true if there is an active session
+    } catch (error: any) {
+      // If there's an error (e.g., no active session), handle it appropriately
+      if (error.code === 401) {
+        return false; // No active session
+      }
+      throw error; // Re-throw other unexpected errors
+    }
+  };
+
+  // Function to delete all sessions for the current user
+
+export const deleteSessions = async () => {
+  try {
+    // Get the list of all sessions
+    const sessions = await account.listSessions();
+
+    // Delete each session
+    await Promise.all(
+      sessions.sessions.map(async (session) => {
+        await account.deleteSession(session.$id);
+      })
+    );
+
+    console.log('All sessions deleted successfully');
+  } catch (error: any) {
+    console.error('Error deleting sessions:', error.message);
+    throw error; // Re-throw the error for further handling
+  }
+};
+
   export async function loginwithEmail(email: string, password: string) {
     try {
       console.log('=== Login Debug ===');
@@ -128,10 +162,11 @@ import { InteractionManagerStatic, Alert } from "react-native";
         endpoint: client.config.endpoint,
         project: client.config.project,
       });
-      if((await account.getSession("current")).current){
-        console.log('deleting session');
-        const result2 = await account.deleteSession("current");
-        //return true;
+
+      const session = await checkActiveSession();
+
+      if(session){
+        await deleteSessions();
       }
   
       const result = await account.createEmailPasswordSession(email, password);
