@@ -19,6 +19,7 @@
     "@expo/vector-icons": "^14.0.0",
     "@react-native-community/masked-view": "^0.1.11",
     "@react-native-picker/picker": "^2.11.0",
+    "@react-native/js-polyfills": "^0.80.2",
     "@react-navigation/bottom-tabs": "^7.2.0",
     "@react-navigation/native": "^7.0.14",
     "@types/mime": "^2.0.3",

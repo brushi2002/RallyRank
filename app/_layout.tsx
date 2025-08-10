@@ -1,4 +1,5 @@
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
+import 'react-native-url-polyfill/auto';
 import { useFonts } from 'expo-font';
 import { Stack, Slot } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
