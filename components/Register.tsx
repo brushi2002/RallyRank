@@ -1,8 +1,8 @@
 import { View, Text, ScrollView, Alert, TouchableOpacity, Button, StyleSheet, TextInput } from 'react-native'
 import React, { useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import { registerUser } from '../../lib/appwrite'
-import { useGlobalContext } from '@/lib/global-provider'
+import { registerUser } from '../lib/appwrite'
+import { useGlobalContext } from '../lib/global-provider'
 import { Redirect } from 'expo-router'
 import { Controller, useForm } from 'react-hook-form'
 
