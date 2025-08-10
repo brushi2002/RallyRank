@@ -1,5 +1,6 @@
 import { View, Text, ScrollView, Image, Alert, TouchableOpacity, StyleSheet, TextInput, Dimensions } from 'react-native'
-import React, { useState } from 'react'
+import * as React from 'react'
+import { useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { loginwithEmail } from '@/lib/appwrite'
 import { useGlobalContext } from '@/lib/global-provider'
@@ -63,7 +64,7 @@ const SignIn = ({showHeaderImage = true}: {showHeaderImage?: boolean}) => {
             autoPlay={true}
             data={images}
             scrollAnimationDuration={1000}
-            renderItem={({ item }) => (
+            renderItem={({ item }: { item: any }) => (
               <View className="flex-1 justify-center items-center">
                 <Image
                   source={item}

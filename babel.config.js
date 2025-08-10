@@ -1,40 +1,13 @@
 module.exports = function (api) {
-    api.cache(true);
-    return {
-      presets: [
-        [
-          'babel-preset-expo',
-          {
-            jsxImportSource: 'nativewind',
-          },
-        ], ['module:metro-react-native-babel-preset'],
-      ], 
-      plugins: [
-        [
-          'module-resolver',
-          {
-            root: ['./src'],
-            extensions: ['.ios.js', '.android.js', '.js', '.jsx', '.json', '.ts', '.tsx'],
-            alias: {
-              '@': './src',
-            },
-          },
-        ],
-        [
-          'module:react-native-dotenv',
-          {
-            envName: 'APP_ENV',
-            moduleName: '@env',
-            path: '.env',
-            blocklist: null,
-            allowlist: null,
-            blacklist: null, // DEPRECATED
-            whitelist: null, // DEPRECATED
-            safe: false,
-            allowUndefined: true,
-            verbose: false,
-          },
-        ],
-      ],
-    };
+  api.cache(true);
+  return {
+    presets: [
+      ['babel-preset-expo', { jsxImportSource: 'nativewind' }],
+      'nativewind/babel',
+  ],
+  plugins: [
+    'expo-router/babel',
+    'react-native-reanimated/plugin',
+  ],
   };
+};
