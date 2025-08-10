@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Text, FlatList, ActivityIndicator, View, Alert } from "react-native";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
-import { verifyInstallation } from "nativewind";
 import { Models } from "appwrite";
 import { FontAwesome } from '@expo/vector-icons';
 import { useTheme } from '@react-navigation/native';

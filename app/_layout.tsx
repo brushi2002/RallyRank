@@ -7,7 +7,8 @@ import { useEffect } from 'react';
 import 'react-native-reanimated';
 import 'react-native-gesture-handler';
 import { GlobalProvider } from '@/lib/global-provider';
-import './global.css';
+import '../global.css'
+console.log('CSS imported');
 
 import { useColorScheme } from '@/hooks/useColorScheme';
 

@@ -9,6 +9,7 @@ import { Controller, useForm } from 'react-hook-form'
 import Carousel from 'react-native-reanimated-carousel'
 import Purchases, {LOG_LEVEL} from "react-native-purchases";
 
+
 const SignIn = ({showHeaderImage = true}: {showHeaderImage?: boolean}) => {
   const { refetch, loading, isLoggedIn } = useGlobalContext();
   const [isLoading, setIsLoading] = useState(false);
