@@ -1,6 +1,6 @@
 import {SafeAreaView} from "react-native-safe-area-context";
 import {ActivityIndicator, Button} from "react-native";
-import { useGlobalContext } from "@/lib/global-provider";
+import { useGlobalContext } from "../../lib/global-provider";
 import { Slot, Redirect } from "expo-router";
 import { Platform } from "react-native";
 import React, { useEffect, useRef } from "react";
