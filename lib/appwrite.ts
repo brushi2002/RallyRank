@@ -128,6 +128,10 @@ import { InteractionManagerStatic, Alert } from "react-native";
         endpoint: client.config.endpoint,
         project: client.config.project,
       });
+      if((await account.getSession("current")).current){
+        console.log('deleting session');
+        const result2 = await account.deleteSession("current");
+      }
   
       const result = await account.createEmailPasswordSession(email, password);
       console.log('Login successful:', result);
