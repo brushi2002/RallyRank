@@ -8,11 +8,40 @@ import { Redirect, router } from 'expo-router'
 import { Controller, useForm } from 'react-hook-form'
 import Carousel from 'react-native-reanimated-carousel'
 import Purchases, {LOG_LEVEL} from "react-native-purchases";
+import OnboardingFlow from '../../components/OnBoardingFlow';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+
+
 
 const SignIn = ({showHeaderImage = true}: {showHeaderImage?: boolean}) => {
   const { refetch, loading, isLoggedIn } = useGlobalContext();
   const [isLoading, setIsLoading] = useState(false);
+  const [showOnboarding, setShowOnboarding] = useState(true);
   const width = Dimensions.get('window').width;
+
+  // Check onboarding status on mount
+  React.useEffect(() => {
+    const checkOnboardingStatus = async () => {
+      try {
+        const hasSeenOnboarding = await AsyncStorage.getItem('hasSeenOnboarding');
+        if (hasSeenOnboarding === 'true') {
+          setShowOnboarding(false);
+        }
+      } catch (error) {
+        console.error('Error checking onboarding status:', error);
+      }
+    };
+    
+    checkOnboardingStatus();
+  }, []);
+
+  const handleOnboardingComplete = async () => {
+    await AsyncStorage.setItem('hasSeenOnboarding', 'true');
+    setShowOnboarding(false);
+    // Redirect to register page for first-time users
+    router.push('/(auth)/register');
+  };
   
   // Sample images for the carousel - using existing images for now
   const images = [
@@ -32,6 +61,11 @@ const SignIn = ({showHeaderImage = true}: {showHeaderImage?: boolean}) => {
     return <Redirect href="/" />;
   }
 
+  // Show onboarding if user hasn't seen it yet
+  if (showOnboarding) {
+    return <OnboardingFlow onComplete={handleOnboardingComplete} />;
+  }
+
   const handleLogin = async (data: FormData) => {
     if (isLoading) return;
     try {
@@ -47,8 +81,10 @@ const SignIn = ({showHeaderImage = true}: {showHeaderImage?: boolean}) => {
   };
 
   return (
+
     <SafeAreaView className="bg-white flex-1">
       <ScrollView pointerEvents="box-none" className="flex-1">
+
       {/* Welcome Text */}
       {showHeaderImage && (
       <View className="flex-col items-center mt-8 mb-4">

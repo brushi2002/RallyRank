@@ -1,30 +1,12 @@
 import {SafeAreaView} from "react-native-safe-area-context";
-import {ActivityIndicator, Button} from "react-native";
+import {ActivityIndicator, Button, Text, View} from "react-native";
 import { useGlobalContext } from "../../lib/global-provider";
-import { Slot, Redirect } from "expo-router";
-import { Platform } from "react-native";
-import React, { useEffect, useRef } from "react";
-import RevenueCatUI, { PAYWALL_RESULT } from "react-native-purchases-ui";
-import { GlobalProvider } from '../../lib/global-provider';
-import { Text, View } from "react-native";
-import { verifyEmail, getCurrentUser } from "../../lib/appwrite";
-import { account } from "../../lib/appwrite";
-import { router } from 'expo-router';
-import { useFocusEffect } from '@react-navigation/native';
-
-
-
-
+import { Slot, Redirect, router } from "expo-router";
+import React, { useEffect, useRef, useState } from "react";
+import { verifyEmail, getCurrentUser, account } from "../../lib/appwrite";
 export default function RootLayout() {
     const {loading, isLoggedIn, user, refetch} = useGlobalContext();
     const verificationIntervalRef = useRef<number | null>(null);
-
-    useFocusEffect(
-        React.useCallback(() => {
-            refetch();
-            return () => {}; // Return cleanup function
-        }, [])
-    );
 
     // Email verification listener
     useEffect(() => {
@@ -76,6 +58,7 @@ export default function RootLayout() {
             </SafeAreaView>
         )
     }
+
 
     if(!isLoggedIn) {
         return <Redirect href="/sign-in" />
