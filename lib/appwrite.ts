@@ -10,7 +10,7 @@ import {
   } from "react-native-appwrite";
   import * as Linking from "expo-linking";
   import { openAuthSessionAsync } from "expo-web-browser";
-import { InteractionManagerStatic } from "react-native";
+import { InteractionManagerStatic, Alert } from "react-native";
   
   // Environment variables will be checked when actually used
   // This allows the app to start even if env vars are not set
@@ -120,9 +120,35 @@ import { InteractionManagerStatic } from "react-native";
   }
 
   export async function loginwithEmail(email: string, password: string) {
-    const loggedIn = await account.createEmailPasswordSession(email, password);
-    console.log("Welcome Back, You are logged in");
-    return loggedIn;
+    try {
+      console.log('=== Login Debug ===');
+      console.log('Attempting login with email:', email);
+      console.log('Password length:', password.length);
+      console.log('Appwrite client config:', {
+        endpoint: client.config.endpoint,
+        project: client.config.project,
+      });
+  
+      const result = await account.createEmailPasswordSession(email, password);
+      console.log('Login successful:', result);
+      
+      // Navigate or update state
+      
+    } catch (error: any) {
+      console.error('Login error:', error);
+      console.error('Error details:', {
+        message: error.message,
+        code: error.code,
+        type: error.type,
+      });
+      
+      // Show user-friendly error
+      Alert.alert(
+        'Login Error', 
+        `${error.message}\n\nCode: ${error.code}`,
+        [{ text: 'OK' }]
+      );
+    }
   }
 
   export async function doesLadderCodeExist(ladderCode: string) {
