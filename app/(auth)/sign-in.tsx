@@ -1,4 +1,4 @@
-import { View, Text, ScrollView, Image, Alert, TouchableOpacity, StyleSheet, TextInput, Dimensions } from 'react-native'
+import { View, Text, ScrollView, Image, Alert, TouchableOpacity, StyleSheet, TextInput, Dimensions, KeyboardAvoidingView, Platform } from 'react-native'
 import * as React from 'react'
 import { useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
@@ -45,9 +45,9 @@ const SignIn = ({showHeaderImage = true}: {showHeaderImage?: boolean}) => {
   
   // Sample images for the carousel - using existing images for now
   const images = [
-    require('../../assets/images/tennis1.jpg'),
-    require('../../assets/images/tennis2.jpg'),
-    require('../../assets/images/tennis3.jpg'),
+    { id: 1, source: require('../../assets/images/tennis1.jpg') },
+    { id: 2, source: require('../../assets/images/tennis2.jpg') },
+    { id: 3, source: require('../../assets/images/tennis3.jpg') },
   ];
 
   interface FormData {
@@ -91,31 +91,20 @@ const SignIn = ({showHeaderImage = true}: {showHeaderImage?: boolean}) => {
         <Text className="text-base text-black">Welcome to</Text>
         <Text className="text-3xl font-bold" style={{ color: '#2E8B57' }}>Rally Rank</Text>
 
-        {/* Carousel */}
-        <View className="h-48 mb-8">
-          <Carousel
-            loop
-            width={width}
-            height={200}
-            autoPlay={true}
-            data={images}
-            scrollAnimationDuration={1000}
-            renderItem={({ item }: { item: any }) => (
-              <View className="flex-1 justify-center items-center">
-                <Image
-                  source={item}
-                  style={{ width: width - 40, height: 180, borderRadius: 10 }}
-                  resizeMode="cover"
-                />
-              </View>
-            )}
+        {/* Simple Image Display */}
+        <View className="h-48 mb-8 justify-center items-center">
+          <Image
+            source={images[0].source}
+            style={{ width: width - 40, height: 180, borderRadius: 10 }}
+            resizeMode="cover"
           />
         </View> 
         </View>
         )}
 
         {/* Login Form */}
-        <View className="px-8">
+        <KeyboardAvoidingView className="px-8"
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
           <Text className="text-center text-gray-600 mb-4">
             Sign in to your account
           </Text>
@@ -132,6 +121,7 @@ const SignIn = ({showHeaderImage = true}: {showHeaderImage?: boolean}) => {
             }}
             render={({ field: { onChange, onBlur, value } }) => (
               <TextInput
+              textContentType="emailAddress"
                 style={styles.textInput}
                 onBlur={onBlur}
                 onChangeText={onChange}
@@ -156,6 +146,7 @@ const SignIn = ({showHeaderImage = true}: {showHeaderImage?: boolean}) => {
             }}
             render={({ field: { onChange, onBlur, value } }) => (
               <TextInput
+                textContentType="password"
                 style={styles.textInput}
                 onBlur={onBlur}
                 onChangeText={onChange}
@@ -192,17 +183,18 @@ const SignIn = ({showHeaderImage = true}: {showHeaderImage?: boolean}) => {
               </Text>
             </Text>
           </View>
-        </View>
+        </KeyboardAvoidingView>
         <View>
           </View>
       {/* Your login form */}
       
-      {/* Debug info - remove in production */}
+      {/* Debug info - remove in production 
       <View style={{ padding: 10, backgroundColor: 'yellow' }}>
         <Text>Debug Info:</Text>
         <Text>Endpoint: {process.env.EXPO_PUBLIC_APPWRITE_ENDPOINT || 'NOT SET'}</Text>
         <Text>Project: {process.env.EXPO_PUBLIC_APPWRITE_PROJECT_ID || 'NOT SET'}</Text>
       </View>
+      */}
       </ScrollView>
     </SafeAreaView>
   );

@@ -1,16 +1,19 @@
-import { View, Text, ScrollView, Alert, TouchableOpacity, StyleSheet, TextInput } from 'react-native'
+import { View, Text, ScrollView, Alert, TouchableOpacity, StyleSheet, TextInput, KeyboardAvoidingView, Platform } from 'react-native'
 import React, { useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { registerUser, doesLadderCodeExist, doesEmailExist, verifyEmail } from '../../lib/appwrite'
 import { useGlobalContext } from '../../lib/global-provider'
 import { Redirect, router } from 'expo-router'
 import { Controller, useForm } from 'react-hook-form'
-
+import { Image } from 'react-native';
+import PhoneInput, {isValidPhoneNumber}  from 'react-native-international-phone-number';
 
 const Register = () => {
   const { refetch, loading, isLoggedIn } = useGlobalContext();
   const [isLoading, setIsLoading] = useState(false);
   const [leagueCode, setLeagueCode] = useState('');
+  const [phone, setPhone] = useState('');
+  const [selectedCountry, setSelectedCountry] = useState<any>(null);
 
   interface FormData {
     Email: string;
@@ -72,6 +75,14 @@ const Register = () => {
     }
   };
 
+  function handleInputValue(phoneNumber: string) {
+    setPhone(phoneNumber);
+  }
+
+  function handleSelectedCountry(country: any) {
+    setSelectedCountry(country);
+  }
+
   return (
     <SafeAreaView className="bg-white flex-1">
       <ScrollView pointerEvents="box-none" className="flex-1">
@@ -82,10 +93,11 @@ const Register = () => {
         </View>
 
         {/* Create Account Text */}
+        <KeyboardAvoidingView className="px-8"
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
         <Text className="text-xl text-center text-gray-700 mt-4 mb-8">
           Create Your Account
         </Text>
-        <View className="mb-4">
         <Text className="text-gray-700 font-medium mb-1">Full Name</Text>
           <Controller
             control={control}
@@ -112,10 +124,7 @@ const Register = () => {
               {errors.Name.message}
             </Text>
           )}
-          </View>
 
-
-      <View className="mb-4">
         <Text className="text-gray-700 font-medium mb-1">Email</Text>
           <Controller
             control={control}
@@ -129,6 +138,7 @@ const Register = () => {
             }}
             render={({ field: { onChange, onBlur, value } }) => (
               <TextInput
+                textContentType="emailAddress"
                 style={styles.input}
                 onBlur={onBlur}
                 onChangeText={onChange}
@@ -144,40 +154,37 @@ const Register = () => {
               {errors.Email.message}
             </Text>
           )}
-        <View className="mb-4">
+        
         <Text className="text-gray-700 font-medium mb-1">Phone Number</Text>
         <Controller
-            control={control}
-            name="PhoneNumber"
-            rules={{
-              pattern: {
-                value: /^[2-9]\d{9}$/,
-                message: "Invalid Phone Number. Format: 9876543210"
-              },
-              required: 'Phone Number is Required',
-              minLength: {
-                value: 10,
-                message: 'Phone Number must be at least 10 characters'
-              }
-
-            }}
-            render={({ field: { onChange, onBlur, value } }) => (
-              <TextInput
-                style={styles.input}
-                onBlur={onBlur}
-                onChangeText={onChange}
-                value={value}
-                placeholder="PhoneNumber"
-              />
-            )}
+        name="PhoneNumber"
+        control={control}
+        render={({field: {onChange, onBlur, value}}) => (
+          <PhoneInput
+            defaultCountry="US"
+            defaultValue="+12505550199"
+            value={value}
+            onChangePhoneNumber={onChange}
+            selectedCountry={selectedCountry}
+            onChangeSelectedCountry={handleSelectedCountry}
+            visibleCountries={['US','AU']}
           />
-          {errors.PhoneNumber && (
-            <Text className="text-red-500 mb-2">
-              {errors.PhoneNumber.message}
-            </Text>
-          )}
+        )}
+      />
+
+      <View style={{ marginTop: 10 }}>
+          <Text>
+            Country:{' '}
+            {selectedCountry ? `${selectedCountry.translations?.eng?.common} (${selectedCountry.cca2})` : 'Not selected'}
+          </Text>
+          <Text>
+            Phone Number: {selectedCountry ? `${selectedCountry.idd?.root} ${phone}` : phone}
+          </Text>
+          <Text>
+            {phone && selectedCountry ? (isValidPhoneNumber(phone, selectedCountry) ? 'true' : 'Please Enter a Valid Phone Number') : 'false'}
+          </Text>
         </View>
-        <View className="mb-4">
+
         <Text className="text-gray-700 font-medium mb-1">Password</Text>
           <Controller
             control={control}
@@ -191,6 +198,7 @@ const Register = () => {
             }}
             render={({ field: { onChange, onBlur, value } }) => (
               <TextInput
+                textContentType="password"
                 style={styles.input}
                 onBlur={onBlur}
                 onChangeText={onChange}
@@ -205,9 +213,7 @@ const Register = () => {
               {errors.Password.message}
             </Text>
           )}
-          </View>
-
-          <View className="mb-4">
+          
           <Text className="text-gray-700 font-medium mb-1">Ladder Code (for Inviting Members)</Text>
           <Controller
             control={control}
@@ -235,7 +241,6 @@ const Register = () => {
               {errors.LadderCode.message}
             </Text>
           )}
-          </View>
 
           <TouchableOpacity
             className="bg-gray-200 py-4 rounded-lg mt-4"
@@ -274,7 +279,7 @@ const Register = () => {
                 Create a new Ladder
               </Text>
           </View>
-        </View>
+          </KeyboardAvoidingView>
       </ScrollView>
     </SafeAreaView>
   );

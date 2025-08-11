@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, StyleSheet, ActivityIndicator, Button, ScrollView, TouchableOpacity, Linking, Image } from 'react-native';
+import { View, StyleSheet, ActivityIndicator, Button, ScrollView, TouchableOpacity, Linking, Image, Platform } from 'react-native';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { useGlobalContext } from '../../../lib/global-provider';
 import { ThemedText } from '../../../components/ThemedText';
