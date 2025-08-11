@@ -13,15 +13,6 @@ console.log('CSS imported');
 
 import { useColorScheme } from '../hooks/useColorScheme';
 
-// Web-specific configuration
-if (typeof window !== 'undefined') {
-  // Ensure React Native Web is properly configured
-  const { Platform } = require('react-native');
-  if (Platform.OS === 'web') {
-    // Add any web-specific polyfills here if needed
-  }
-}
-
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 // SplashScreen.preventAutoHideAsync();
 

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, StyleSheet, ActivityIndicator, Button, ScrollView, TouchableOpacity, Linking, Image, Platform } from 'react-native';
+import { View, StyleSheet, ActivityIndicator, Button, ScrollView, TouchableOpacity, Linking, Image, Text } from 'react-native';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { useGlobalContext } from '../../../lib/global-provider';
 import { ThemedText } from '../../../components/ThemedText';
@@ -9,12 +9,17 @@ import { Models } from 'react-native-appwrite';
 import { account } from '../../../lib/appwrite';
 import { router } from 'expo-router';
 import * as ImagePicker from 'expo-image-picker';
+import { useFocusEffect } from '@react-navigation/native';
+
 
 type ExtendedUser = {
   name?: string;
   email: string;
   location?: string;
   phone?: string;
+  wins: number;
+  losses: number;
+  leagueinfo?: any;
 }
 
 const InfoRow = ({ icon, label, value }: { icon: IconSymbolName; label: string; value: string }) => (
@@ -30,7 +35,9 @@ const InfoRow = ({ icon, label, value }: { icon: IconSymbolName; label: string; 
 );
 
 export default function Profile() {
+
   const { user, loading, refetch } = useGlobalContext();
+
   const [profileImage, setProfileImage] = useState<string | null>(null);
   
   const requestPermission = async () => {
@@ -107,62 +114,72 @@ export default function Profile() {
     name: user.name,
     email: user.email,
     location: (user as any).prefs?.location as string | undefined,
-    phone: user.PhoneNumber
+    phone: user.PhoneNumber,
+    wins: user.leagueinfo.wins,
+    losses: user.leagueinfo.losses
   };
 
   return (
-    <SafeAreaProvider>
-      <SafeAreaView className="flex-1 bg-gray-50">
-        <ScrollView className="flex-1">
-          <View className="p-4 bg-white border-b border-gray-200">
-            <ThemedText type="title">Profile</ThemedText>
-          </View>
-          
-          {/* Profile Image Section 
-          <View className="items-center py-6 bg-white">
-            <TouchableOpacity onPress={pickImage} className="relative">
-              <View className="w-24 h-24 rounded-full bg-gray-200 items-center justify-center overflow-hidden">
-                {profileImage ? (
-                  <Image
-                    source={{ uri: profileImage }}
-                    className="w-full h-full"
-                    style={{ resizeMode: 'cover' }}
-                  />
-                ) : (
-                  <IconSymbol name="person.fill" size={40} color="#9CA3AF" />
-                )}
+  <SafeAreaView style={styles.container}>
+  <ScrollView showsVerticalScrollIndicator={false}>
+     {/* Header */}
+     <View style={styles.header}>
+          <View style={styles.profileMain}>
+            <View style={styles.avatar}>
+              <Text style={styles.avatarText}>
+                {userInfo?.name?.split(' ').map(n => n[0]).join('') || 'MS'}
+              </Text>
+            </View>
+            <Text style={styles.playerName}>{userInfo.name || 'Mike Smith'}</Text>
+            </View>
+            <View style={styles.statsRow}>
+              <View style={styles.statItem}>
+                <Text style={styles.statNumber}>{userInfo.wins + userInfo.losses}</Text>
+                <Text style={styles.statLabel}>Matches</Text>
               </View>
-              <View className="absolute bottom-0 right-0 bg-blue-500 rounded-full p-2">
-                <IconSymbol name="camera.fill" size={16} color="white" />
+              <View style={styles.statItem}>
+                <Text style={styles.statNumber}>{userInfo.wins}</Text>
+                <Text style={styles.statLabel}>Wins</Text>
               </View>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={pickImage} className="mt-2">
-              <ThemedText className="text-sm text-blue-600">Change Photo</ThemedText>
-            </TouchableOpacity>
+              <View style={styles.statItem}>
+                <Text style={styles.statNumber}>{((userInfo.wins / (userInfo.wins + userInfo.losses)) * 100).toFixed(2)}%</Text>
+                <Text style={styles.statLabel}>Win Rate</Text>
+              </View>
           </View>
-          */}
-          
-          <View className="mt-4">
-            <InfoRow
-              icon="person.fill"
-              label="Name"
-              value={userInfo.name || 'Not set'}
-            />
-            <InfoRow
-              icon="envelope.fill"
-              label="Email"
-              value={userInfo.email}
-            />
-            <InfoRow
-              icon="location.fill"
-              label="Location"
-              value={userInfo.location || 'Not set'}
-            />
-            <InfoRow
-              icon="phone.fill"
-              label="Phone"
-              value={userInfo.phone || 'Not set'}
-            />
+          {/* Ranking Card */}
+          <View style={styles.rankingCard}>
+            <Text style={styles.currentRank}>#12</Text>
+            <Text style={styles.rankLabel}>Current League Ranking</Text>
+            <View style={styles.rankChange}>
+              <Text style={styles.rankChangeText}>↗ +3 this month</Text>
+            </View>
+          </View>
+          </View>
+          {/* Contact Info */}
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>Contact Info</Text>
+            <View style={styles.contactInfo}>
+              <ContactItem 
+                icon="📧" 
+                label="Email" 
+                value={userInfo.email}
+              />
+              <ContactItem 
+                icon="📱" 
+                label="Phone" 
+                value={userInfo.phone || 'Not set'}
+              />
+              <ContactItem 
+                icon="📍" 
+                label="Location" 
+                value="San Diego, CA"
+              />
+              <ContactItem 
+                icon="🎂" 
+                label="Playing Since" 
+                value="2019"
+              />
+            </View>
           </View>
           <View style={styles.buttonContainer}>
             <Button
@@ -193,9 +210,20 @@ export default function Profile() {
           </View>
         </ScrollView>
       </SafeAreaView>
-    </SafeAreaProvider>
   );
 }
+
+const ContactItem = ({ icon, label, value }: { icon: string; label: string; value: string }) => (
+  <TouchableOpacity style={styles.contactItem}>
+    <View style={styles.contactIcon}>
+      <Text style={styles.contactIconText}>{icon}</Text>
+    </View>
+    <View style={styles.contactDetails}>
+      <Text style={styles.contactLabel}>{label}</Text>
+      <Text style={styles.contactValue}>{value}</Text>
+    </View>
+  </TouchableOpacity>
+);
 
 const styles = StyleSheet.create({
   headerImage: {
@@ -212,4 +240,293 @@ const styles = StyleSheet.create({
     marginTop: 20,
     paddingHorizontal: 16,
   },
-});
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+  },
+  header: {
+    backgroundColor: '#667eea',
+    paddingTop: 20,
+    paddingBottom: 20,
+    paddingHorizontal: 20,
+  },
+  headerNav: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 20,
+  },
+  navButton: {
+    backgroundColor: 'rgba(255,255,255,0.2)',
+    padding: 8,
+    borderRadius: 8,
+  },
+  navButtonText: {
+    color: 'white',
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  profileMain: {
+    alignItems: 'center',
+  },
+  avatar: {
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    backgroundColor: '#764ba2',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 16,
+    borderWidth: 4,
+    borderColor: 'white',
+  },
+  avatarText: {
+    color: 'white',
+    fontSize: 32,
+    fontWeight: 'bold',
+  },
+  playerName: {
+    color: 'white',
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 8,
+  },
+  statsRow: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    gap: 24,
+    marginTop: 20,
+  },
+  statItem: {
+    alignItems: 'center',
+  },
+  statNumber: {
+    color: 'white',
+    fontSize: 20,
+    fontWeight: 'bold',
+  },
+  statLabel: {
+    color: 'white',
+    fontSize: 12,
+    opacity: 0.9,
+    textTransform: 'uppercase',
+  },
+  content: {
+    padding: 20,
+  },
+  quickActions: {
+    flexDirection: 'row',
+    gap: 12,
+    marginBottom: 24,
+  },
+  actionButton: {
+    flex: 1,
+    backgroundColor: '#667eea',
+    padding: 16,
+    borderRadius: 12,
+    alignItems: 'center',
+  },
+  secondaryButton: {
+    backgroundColor: 'white',
+    borderWidth: 2,
+    borderColor: '#667eea',
+  },
+  actionButtonText: {
+    color: 'white',
+    fontWeight: '600',
+    fontSize: 16,
+  },
+  secondaryButtonText: {
+    color: '#667eea',
+  },
+  rankingCard: {
+    backgroundColor: '#667eea',
+    borderRadius: 12,
+    padding: 20,
+    alignItems: 'center',
+    marginBottom: 24,
+  },
+  currentRank: {
+    color: 'white',
+    fontSize: 32,
+    fontWeight: 'bold',
+    marginBottom: 8,
+  },
+  rankLabel: {
+    color: 'white',
+    fontSize: 14,
+    opacity: 0.9,
+    marginBottom: 16,
+  },
+  rankChange: {
+    alignItems: 'center',
+  },
+  rankChangeText: {
+    color: '#4ade80',
+    fontSize: 14,
+  },
+  section: {
+    marginBottom: 24,
+  },
+  sectionHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 16,
+  },
+  sectionTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#1a1a1a',
+    marginBottom: 16,
+  },
+  seeAll: {
+    color: '#667eea',
+    fontSize: 14,
+    fontWeight: '500',
+  },
+  statsGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 12,
+  },
+  statCard: {
+    backgroundColor: '#f8f9fa',
+    borderRadius: 12,
+    padding: 16,
+    alignItems: 'center',
+    width: '48%',
+  },
+  statCardNumber: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#667eea',
+    marginBottom: 4,
+  },
+  statCardLabel: {
+    fontSize: 12,
+    color: '#666',
+    textTransform: 'uppercase',
+  },
+  contactInfo: {
+    backgroundColor: '#f8f9fa',
+    borderRadius: 12,
+    padding: 16,
+  },
+  contactItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: '#e9ecef',
+  },
+  contactIcon: {
+    width: 40,
+    height: 40,
+    backgroundColor: '#667eea',
+    borderRadius: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: 12,
+  },
+  contactIconText: {
+    fontSize: 16,
+  },
+  contactDetails: {
+    flex: 1,
+  },
+  contactLabel: {
+    fontSize: 12,
+    color: '#666',
+    textTransform: 'uppercase',
+  },
+  contactValue: {
+    fontSize: 14,
+    fontWeight: '500',
+    color: '#1a1a1a',
+    marginTop: 2,
+  },
+  contactAction: {
+    padding: 8,
+    borderRadius: 6,
+  },
+  contactActionText: {
+    color: '#667eea',
+    fontSize: 16,
+  },
+  matchItem: {
+    backgroundColor: 'white',
+    borderWidth: 1,
+    borderColor: '#e9ecef',
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 12,
+  },
+  matchHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 12,
+  },
+  matchDate: {
+    fontSize: 12,
+    color: '#666',
+    textTransform: 'uppercase',
+  },
+  matchResult: {
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 6,
+  },
+  matchWin: {
+    backgroundColor: '#d4edda',
+  },
+  matchLoss: {
+    backgroundColor: '#f8d7da',
+  },
+  matchResultText: {
+    fontSize: 12,
+    fontWeight: 'bold',
+    textTransform: 'uppercase',
+  },
+  matchWinText: {
+    color: '#155724',
+  },
+  matchLossText: {
+    color: '#721c24',
+  },
+  matchDetails: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  opponentAvatar: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: '#f0f0f0',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: 12,
+  },
+  opponentAvatarText: {
+    fontWeight: 'bold',
+    color: '#666',
+  },
+  matchInfo: {
+    flex: 1,
+  },
+  opponentName: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#1a1a1a',
+  },
+  matchScore: {
+    fontSize: 14,
+    color: '#666',
+    marginTop: 2,
+  },
+  matchLocation: {
+    fontSize: 12,
+    color: '#999',
+  },
+ });
+ 

@@ -406,9 +406,10 @@ export default function EnterScore() {
                   ) : (
                     <Picker
                       selectedValue={selectedOpponent}
-                      onValueChange={(itemValue: string, itemIndex: number) => {
+                      onValueChange={(itemValue: string, itemPosition: number) => {
+                        
+                        setSelectedOpponentName(playersData?.documents[itemPosition-1] ? playersData?.documents[itemPosition-1].player.name : 'Select an opponent');
                         setSelectedOpponent(itemValue);
-                        setSelectedOpponentName(playersData?.documents[itemIndex-1] ? playersData?.documents[itemIndex-1].player.name : 'Select an opponent');
                       }}
                       style={{ height: 200 }}
                       itemStyle={{ fontSize: 16 }}

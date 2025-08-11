@@ -21,7 +21,7 @@ const OnboardingFlow = ({ onComplete }: OnboardingFlowProps) => {
   const onboardingData = [
     {
       title: "Welcome to Rally Rank",
-      subtitle: "Track matches, Easily Challenge Players, Join and Climb Ladders",
+      subtitle: "Track matches, Easily Challenge Players, Compete with your friends",
       icon: "🎾",
       backgroundColor: "#306e43"
     },
@@ -32,8 +32,8 @@ const OnboardingFlow = ({ onComplete }: OnboardingFlowProps) => {
       backgroundColor: "#306e43"
     },
     {
-      title: "Challenge Opponents",
-      subtitle: "Easily Challenge Players via Text Message, View Opponent Results",
+      title: "Create a Ladder",
+      subtitle: "Create a Ladder on the following screen and invite your fellow players to join",
       icon: "👥",
       backgroundColor: "#306e43"
     }

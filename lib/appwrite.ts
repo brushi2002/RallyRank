@@ -62,7 +62,7 @@ import { InteractionManagerStatic, Alert } from "react-native";
       const account = new Account(client);
 
       console.log('verifying')
-      const promise = account.createVerification('https://example.com/verify');
+      verifyEmail(email);
 
 
       const uniqueId = ID.unique();
@@ -308,7 +308,7 @@ export const deleteSessions = async () => {
   
     export async function getPlayers(leagueId: string){
     try {
-      console.log('Fetching players with config:', {
+      console.log('Calling Appwrite get Players: Fetching players with config:', {
         databaseId: config.databaseId,
         collectionId: config.playerCollectionId
       });
@@ -316,10 +316,10 @@ export const deleteSessions = async () => {
       const result = await databases.listDocuments(
         config.databaseId!,
         config.memberCollectionId!, 
-        [Query.equal('league', leagueId)]
+        [Query.equal('league', leagueId), Query.orderDesc('rating_value')]
       );
       
-      console.log("Appwrite response:", result);
+      console.log("Appwrite response for get Players:", result);
       return result;
     }
     catch (error) {
@@ -475,23 +475,7 @@ export const deleteSessions = async () => {
       throw error;
     }
   }
-
-  export async function savephoto(photo: string, playerId: string) 
-  { 
-      const storage = new Storage(client);
-
-      const result = await databases.createDocument(
-        config.databaseId!,
-        config.playerCollectionId!,
-        playerId,
-        {
-          photo: photo
-        }
-      );
-      return result;
-    }
   
-
   export async function recalcRankings(leagueId: string, winner: string, loser: string) {
     try {
       const KFactor = 32;
@@ -516,13 +500,13 @@ export const deleteSessions = async () => {
         config.databaseId!, 
         config.memberCollectionId!, 
         winnerMembership.documents[0].$id, 
-        { rating_value: newRankW }
+        { rating_value: newRankW, wins: winnerMembership.documents[0].wins + 1 }
       );
       await databases.updateDocument(
         config.databaseId!, 
         config.memberCollectionId!, 
         loserMembership.documents[0].$id, 
-        { rating_value: newRankL }
+        { rating_value: newRankL, losses: loserMembership.documents[0].losses + 1 }
       );
     } catch(error) {
       console.error('Error recalculating rankings:', error);
