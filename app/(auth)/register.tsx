@@ -162,7 +162,7 @@ const Register = () => {
         render={({field: {onChange, onBlur, value}}) => (
           <PhoneInput
             defaultCountry="US"
-            defaultValue="+12505550199"
+            defaultValue="+17149914008"
             value={value}
             onChangePhoneNumber={onChange}
             selectedCountry={selectedCountry}
