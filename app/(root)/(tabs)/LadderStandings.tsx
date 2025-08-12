@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Text, FlatList, ActivityIndicator, View, Alert } from "react-native";
+import { Text, FlatList, ActivityIndicator, View, Alert, StyleSheet } from "react-native";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import { Models } from "appwrite";
 import { FontAwesome } from '@expo/vector-icons';
@@ -75,37 +75,47 @@ const Item = ({ player, rank }: { player: Player; rank: number }) => {
   const isCurrentUser = player.id === user?.$id;
 
   return (
-    <View className={`flex-row items-center p-4 mb-2 rounded-lg shadow-sm ${isCurrentUser ? 'bg-green-50' : 'bg-white'}`}>
-      <View className="flex-1">
-        <View className="flex-row items-center">
-          {medalIcon ? (
-            <FontAwesome name={medalIcon} size={20} color={medalColor || undefined} style={{ marginRight: 8 }} />
-          ) : (
-            <View className="w-7 h-7 rounded-full bg-gray-100 items-center justify-center mr-2">
-              <Text className="text-gray-600">{rank}</Text>
-            </View>
-          )}
-          <Text className={`text-lg ${isCurrentUser ? 'font-bold text-blue-700' : 'font-semibold'} flex-1`}>{player.name}</Text>
-          <Text className={`${isCurrentUser ? 'text-blue-600' : 'text-gray-600'}`}>
+    <View style={[styles.itemContainer, isCurrentUser && styles.currentUserContainer]}>
+      <View style={styles.rankSection}>
+        {medalIcon ? (
+          <FontAwesome name={medalIcon} size={24} color={medalColor || undefined} />
+        ) : (
+          <View style={styles.rankBadge}>
+            <Text style={styles.rankText}>{rank}</Text>
+          </View>
+        )}
+      </View>
+      
+      <View style={styles.playerInfo}>
+        <View style={styles.playerHeader}>
+          <Text style={[styles.playerName, isCurrentUser && styles.currentUserName]}>
+            {player.name}
+          </Text>
+          <Text style={[styles.playerStats, isCurrentUser && styles.currentUserStats]}>
             {player.wins}W - {player.losses}L
           </Text>
-          {!isCurrentUser && user && (
-            <TouchableOpacity 
-              onPress={() => handleChallenge(user.name, player.PhoneNumber, user.leagueinfo.league.Name)}
-              className="ml-4 bg-blue-500 px-3 py-1 rounded-full"
-            >
-              <Text className="text-white text-sm">Challenge</Text>
-            </TouchableOpacity>
-          )}
         </View>
-        <View className="mt-2">
-          <Text className={`text-sm ${isCurrentUser ? 'text-blue-500' : 'text-gray-500'}`}>
-            Recent matches: {player.recentMatches.slice(0, 3).map((match) => 
+        
+        <View style={styles.playerDetails}>
+          <Text style={[styles.recentMatches, isCurrentUser && styles.currentUserRecent]}>
+            Recent: {player.recentMatches.slice(0, 3).map((match) => 
               match.winner === "player1" && match.player_id1.$id === player.id ? 'W' : 'L'
             ).join(' ')}
           </Text>
+          <Text style={styles.winRate}>
+            Win Rate: {((player.wins / (player.wins + player.losses)) * 100).toFixed(1)}%
+          </Text>
         </View>
       </View>
+      
+      {!isCurrentUser && user && (
+        <TouchableOpacity 
+          style={styles.challengeButton}
+          onPress={() => handleChallenge(user.name, player.PhoneNumber, user.leagueinfo.league.Name)}
+        >
+          <Text style={styles.challengeButtonText}>Challenge</Text>
+        </TouchableOpacity>
+      )}
     </View>
   );
 };
@@ -242,6 +252,99 @@ const LadderStandings = () => {
     </SafeAreaProvider>
   );
 };
+const styles = StyleSheet.create({
+  itemContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'white',
+    padding: 16,
+    marginVertical: 8,
+    borderRadius: 12,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  currentUserContainer: {
+    backgroundColor: '#f0f8ff',
+    borderWidth: 2,
+    borderColor: '#667eea',
+  },
+  rankSection: {
+    width: 50,
+    alignItems: 'center',
+  },
+  rankBadge: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    backgroundColor: '#f8f9fa',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  rankText: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#667eea',
+  },
+  playerInfo: {
+    flex: 1,
+    marginLeft: 12,
+  },
+  playerHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 4,
+  },
+  playerName: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#1a1a1a',
+  },
+  currentUserName: {
+    color: '#667eea',
+    fontWeight: 'bold',
+  },
+  playerStats: {
+    fontSize: 14,
+    color: '#666',
+    fontWeight: '500',
+  },
+  currentUserStats: {
+    color: '#667eea',
+  },
+  playerDetails: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  recentMatches: {
+    fontSize: 12,
+    color: '#666',
+    textTransform: 'uppercase',
+  },
+  currentUserRecent: {
+    color: '#667eea',
+  },
+  winRate: {
+    fontSize: 12,
+    color: '#999',
+  },
+  challengeButton: {
+    backgroundColor: '#667eea',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 16,
+    marginLeft: 8,
+  },
+  challengeButtonText: {
+    color: 'white',
+    fontSize: 12,
+    fontWeight: '600',
+  },
+});
 
 export default LadderStandings;
 
