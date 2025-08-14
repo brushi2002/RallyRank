@@ -235,7 +235,7 @@ const LadderStandings = () => {
     <SafeAreaProvider>
       <SafeAreaView className="flex-1 bg-gray-50">
         <View className="p-4 bg-white border-b border-gray-200">
-          <Text className="text-2xl font-bold text-gray-800">Ladder Standings</Text>
+          <Text className="text-2xl font-bold text-gray-800">{user?.leagueinfo.league.Name} Standings</Text>
         </View>
         <FlatList
           data={players}

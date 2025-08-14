@@ -176,7 +176,7 @@ const Register = () => {
         render={({field: {onChange, onBlur, value}}) => (
           <PhoneInput
             defaultCountry="US"
-            defaultValue="+17149914008"
+            defaultValue="+1111111111"
             value={value}
             onChangePhoneNumber={onChange}
             selectedCountry={selectedCountry}
@@ -185,8 +185,9 @@ const Register = () => {
           />
         )}
       />
-
+{/*
       <View style={{ marginTop: 10 }}>
+          
           <Text>
             Country:{' '}
             {selectedCountry ? `${selectedCountry.translations?.eng?.common} (${selectedCountry.cca2})` : 'Not selected'}
@@ -198,7 +199,7 @@ const Register = () => {
             {phone && selectedCountry ? (isValidPhoneNumber(phone, selectedCountry) ? 'true' : 'Please Enter a Valid Phone Number') : 'false'}
           </Text>
         </View>
-
+*/}
         <Text className="text-gray-700 font-medium mb-1">Password</Text>
           <Controller
             control={control}
