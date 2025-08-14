@@ -328,6 +328,28 @@ export const deleteSessions = async () => {
     }
   }
 
+  export async function getPlayersExcludingCurrentUser(leagueId: string, currentUserId: string){
+    try {
+      console.log('Calling Appwrite get Players: Fetching players with config:', {
+        databaseId: config.databaseId,
+        collectionId: config.playerCollectionId
+      });
+      
+      const result = await databases.listDocuments(
+        config.databaseId!,
+        config.memberCollectionId!, 
+        [Query.equal('league', leagueId), Query.orderDesc('rating_value'), Query.notEqual('player', currentUserId)]
+      );
+      
+      console.log("Appwrite response for get Players:", result);
+      return result;
+    }
+    catch (error) {
+      console.error('Error fetching players:', error);
+      return null;
+    }
+  }
+
   export async function getMembership(player: string, league: string){
     try {
       const result = await databases.listDocuments(
@@ -508,6 +530,23 @@ export const deleteSessions = async () => {
         loserMembership.documents[0].$id, 
         { rating_value: newRankL, losses: loserMembership.documents[0].losses + 1 }
       );
+
+      const result = await databases.listDocuments(
+        config.databaseId!,
+        config.memberCollectionId!,
+        [Query.equal('league', leagueId), Query.orderDesc('rating_value')]
+      );
+
+      for(let i = 0; i < result.documents.length; i++){ 
+        await databases.updateDocument(
+          config.databaseId!,
+          config.memberCollectionId!,
+          result.documents[i].$id,
+          { rank: i + 1 }
+        );
+      }
+      console.log("result", result);
+      return result;
     } catch(error) {
       console.error('Error recalculating rankings:', error);
       throw error;

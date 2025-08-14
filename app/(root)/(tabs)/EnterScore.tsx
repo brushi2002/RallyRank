@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, ScrollView, Modal, Platform, StyleSheet, TextInput } from 'react-native';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { Picker } from '@react-native-picker/picker';
-import { getPlayers, createMatchResult, config } from '../../../lib/appwrite';
+import { getPlayersExcludingCurrentUser, createMatchResult, config } from '../../../lib/appwrite';
 import { useAppwrite } from '../../../lib/useAppwrite';
 import { GlobalProvider, useGlobalContext } from '../../../lib/global-provider';
 import { useFocusEffect } from '@react-navigation/native';
@@ -169,7 +169,7 @@ export default function EnterScore() {
   );
 
   const { data: playersData, loading, error } = useAppwrite({
-    fn: () => getPlayers(user?.leagueinfo.league.$id || ''),
+    fn: () => getPlayersExcludingCurrentUser(user?.leagueinfo.league.$id || '', user?.$id || ''),
     skip: false
   });
 
@@ -406,10 +406,12 @@ export default function EnterScore() {
                   ) : (
                     <Picker
                       selectedValue={selectedOpponent}
-                      onValueChange={(itemValue: string, itemPosition: number) => {
-                        
+                      onValueChange={(itemValue: string, itemPosition: number) => {    
                         setSelectedOpponentName(playersData?.documents[itemPosition-1] ? playersData?.documents[itemPosition-1].player.name : 'Select an opponent');
                         setSelectedOpponent(itemValue);
+                        console.log("itemValue========", itemValue);
+                        console.log("itemPosition========", itemPosition);
+                        console.log("playersData========", playersData?.documents[itemPosition-1]);
                       }}
                       style={{ height: 200 }}
                       itemStyle={{ fontSize: 16 }}
@@ -419,7 +421,8 @@ export default function EnterScore() {
                         value="" 
                         color="#666"
                       />
-                      {playersData?.documents?.map((member: any) => (
+                      {
+                      playersData?.documents?.map((member: any) => (
                         user && user.$id !== member.player.$id && (
                           <Picker.Item 
                             key={member.player.$id} 

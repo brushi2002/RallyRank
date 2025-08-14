@@ -20,6 +20,7 @@ type ExtendedUser = {
   wins: number;
   losses: number;
   leagueinfo?: any;
+  rank: number;
 }
 
 const InfoRow = ({ icon, label, value }: { icon: IconSymbolName; label: string; value: string }) => (
@@ -116,7 +117,8 @@ export default function Profile() {
     location: (user as any).prefs?.location as string | undefined,
     phone: user.PhoneNumber,
     wins: user.leagueinfo.wins,
-    losses: user.leagueinfo.losses
+    losses: user.leagueinfo.losses,
+    rank: user.leagueinfo.rank
   };
 
   return (
@@ -148,11 +150,8 @@ export default function Profile() {
           </View>
           {/* Ranking Card */}
           <View style={styles.rankingCard}>
-            <Text style={styles.currentRank}>#12</Text>
+            <Text style={styles.currentRank}>{userInfo.rank}</Text>
             <Text style={styles.rankLabel}>Current League Ranking</Text>
-            <View style={styles.rankChange}>
-              <Text style={styles.rankChangeText}>↗ +3 this month</Text>
-            </View>
           </View>
           </View>
           {/* Contact Info */}

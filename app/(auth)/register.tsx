@@ -90,6 +90,21 @@ const Register = () => {
           <Text className="text-base text-black">Welcome to</Text>
           <Text className="text-3xl font-bold" style={{ color: '#2E8B57' }}>Rally Rank</Text>
         </View>
+                  {/* Create a Ladder */}
+                  <View className="mt-6">
+              <Text className="text-center text-gray-600">
+                No League Code? 
+              </Text>
+              <Text className="text-center text-gray-600">
+                Subscribe and Create a Ladder. You will be able to create a ladder and invite your friends to join.
+              </Text>
+              <Text 
+                className="text-blue-500 font-semibold text-center"
+                onPress={() => router.push('/(auth)/CreateLadder')}
+              >
+                Create a new Ladder
+              </Text>
+          </View>
 
         {/* Create Account Text */}
         <KeyboardAvoidingView className="px-8"
@@ -263,21 +278,7 @@ const Register = () => {
               </Text>
             </Text>
           </View>
-          {/* Create a Ladder */}
-            <View className="mt-6">
-              <Text className="text-center text-gray-600">
-                No League Code? 
-              </Text>
-              <Text className="text-center text-gray-600">
-                Subscribe and Create a Ladder
-              </Text>
-              <Text 
-                className="text-blue-500 font-semibold text-center"
-                onPress={() => router.push('/(auth)/CreateLadder')}
-              >
-                Create a new Ladder
-              </Text>
-          </View>
+
           </KeyboardAvoidingView>
       </ScrollView>
     </SafeAreaView>
