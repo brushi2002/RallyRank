@@ -102,7 +102,7 @@ const Register = () => {
                 className="text-blue-500 font-semibold text-center"
                 onPress={() => router.push('/(auth)/CreateLadder')}
               >
-                Create a new Ladder
+                Subscribe and Create a new Ladder
               </Text>
           </View>
 

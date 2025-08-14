@@ -35,7 +35,6 @@ function HomeScreenContent() {
   const [MData, setMData] = useState<MatchResult[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string>('');
   const { user } = useGlobalContext();
-  console.log('yep', user?.leagueinfo.$id);
   const { data: matchData, loading, error } = useAppwrite({
     fn: () => getMatchResultsForLeague(user?.leagueinfo.league.$id || ''),
     skip: false
@@ -65,16 +64,18 @@ function HomeScreenContent() {
 
   const handleCategoryPress = (category: string) => {
     console.log(category);
-    setSelectedCategory(category);
+    
     if (!user) return;
     const UserID = user.$id;
     console.log('UserID', UserID);
     console.log('matchData', matchData);
     if(category == "My Matches") {
+      setSelectedCategory(category);
       setMData(matchData?.documents?.filter((match: any) => 
         match.player_id1.$id == UserID || match.player_id2.$id == UserID
       ) as MatchResult[]);
     } else {
+      setSelectedCategory('');
       // Reset to all matches when no category is selected
       console.log('no category selected');
       setMData(matchData?.documents as MatchResult[]);
