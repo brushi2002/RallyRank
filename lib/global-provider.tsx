@@ -16,6 +16,11 @@ interface User {
     avatar: string;
     PhoneNumber: string;
     emailVerified: boolean;
+    City: string;
+    County: string;
+    State: string;
+    Country: string;
+    DeviceType: string;
     labels?: string[];
     leagueinfo: Record<string, any>;
     $collectionId?: string;

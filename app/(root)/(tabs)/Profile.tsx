@@ -15,6 +15,11 @@ import { useFocusEffect } from '@react-navigation/native';
 type ExtendedUser = {
   name?: string;
   email: string;
+  city: string;
+  county: string;
+  state: string;
+  country: string;
+  deviceType: string;
   location?: string;
   phone?: string;
   wins: number;
@@ -114,6 +119,11 @@ export default function Profile() {
   const userInfo: ExtendedUser = {
     name: user.name,
     email: user.email,
+    city: user.City,
+    county: user.County,
+    state: user.State,
+    country: user.Country,
+    deviceType: user.DeviceType,
     location: (user as any).prefs?.location as string | undefined,
     phone: user.PhoneNumber,
     wins: user.leagueinfo.wins,
@@ -171,7 +181,7 @@ export default function Profile() {
               <ContactItem 
                 icon="📍" 
                 label="Location" 
-                value="San Diego, CA"
+                value={userInfo.county}
               />
               <ContactItem 
                 icon="🎂" 
