@@ -1,5 +1,5 @@
 import { View, Text, ScrollView, Alert, TouchableOpacity, StyleSheet, TextInput, KeyboardAvoidingView, Platform } from 'react-native'
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { registerUser, doesLadderCodeExist, doesEmailExist, verifyEmail } from '../../lib/appwrite'
 import { useGlobalContext } from '../../lib/global-provider'
@@ -7,14 +7,77 @@ import { Redirect, router } from 'expo-router'
 import { Controller, useForm } from 'react-hook-form'
 import { Image } from 'react-native';
 import PhoneInput, {isValidPhoneNumber}  from 'react-native-international-phone-number';
+import * as Location from 'expo-location'
+import GeoCoder from "react-native-geocoding";
+
+GeoCoder.init("AIzaSyDCKfOSOeV5L7NP6IvTLqsm0qcXVj2E2RQ"); 
 
 const Register = () => {
   const { refetch, loading, isLoggedIn } = useGlobalContext();
+  
   const [isLoading, setIsLoading] = useState(false);
   const [leagueCode, setLeagueCode] = useState('');
   const [phone, setPhone] = useState('');
-  const [selectedCountry, setSelectedCountry] = useState<any>(null);
+  const [selectedCountry, setSelectedCountry] = useState<any>();
+  const [location, setLocation] = useState<any>(null);
+  const [city, setCity] = useState<string>('');
+  const [county, setCounty] = useState<string>('');
+  const [state, setState] = useState<string>('');
+  const [country, setCountry] = useState<string>('');
+  const [deviceType, setDeviceType] = useState<string>('');
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const { control, handleSubmit, formState: { errors }, setError } = useForm<FormData>({mode: 'onChange'});
+  useEffect(() => {
+    async function getCurrentLocation() {
+      
+      // Detect device type
+      setDeviceType(Platform.OS);
+      console.log('Device Type:', Platform.OS);
+      
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== 'granted') {
+        setErrorMsg('Permission to access location was denied');
+        return;
+      }
 
+      let location = await Location.getCurrentPositionAsync({});
+      console.log('Location###', location);
+      GeoCoder.from(location.coords.latitude, location.coords.longitude).then(json => {
+        console.log('GeoCoder###', json);
+        
+        if (json.results && json.results.length > 0) {
+          const addressComponents = json.results[0].address_components;
+          let cityName = '';
+          let countyName = '';
+          let stateName = '';
+          let countryName = '';
+          
+          addressComponents.forEach((component: any) => {
+            if (component.types.includes('locality')) {
+              cityName = component.long_name;
+            } else if (component.types.includes('administrative_area_level_2')) {
+              countyName = component.long_name;
+            } else if (component.types.includes('administrative_area_level_1')) {
+              stateName = component.short_name;
+            } else if (component.types.includes('country')) {
+              countryName = component.long_name;
+            }
+          });
+          
+          setCity(cityName);
+          setCounty(countyName);
+          setState(stateName);
+          setCountry(countryName);
+          console.log('City:', cityName, 'County:', countyName, 'State:', stateName, 'Country:', countryName);
+        }
+      }).catch(error => {
+        console.log('GeoCoder Error:', error);
+      });
+      setLocation(location);
+    }
+
+    getCurrentLocation();
+  }, []);
   interface FormData {
     Email: string;
     Password: string;
@@ -23,7 +86,6 @@ const Register = () => {
     PhoneNumber: string;
   }
 
-  const { control, handleSubmit, formState: { errors }, setError } = useForm<FormData>({mode: 'onChange'});
 
   if (!loading && isLoggedIn) {
     return <Redirect href="/" />;
@@ -58,7 +120,7 @@ const Register = () => {
       setIsLoading(true);
       const regex = /^([a-zA-Z0-9]{5})$/;
 
-      const result = await registerUser(data.Email, data.Password, data.Name, data.LadderCode, data.PhoneNumber);
+      const result = await registerUser(data.Email, data.Password, data.Name, data.LadderCode, data.PhoneNumber, city, county, state, country, deviceType);
       if(result == null){
         setLeagueCode('Invalid League Code. Please try again.');
         return;
@@ -176,7 +238,6 @@ const Register = () => {
         render={({field: {onChange, onBlur, value}}) => (
           <PhoneInput
             defaultCountry="US"
-            defaultValue="+1111111111"
             value={value}
             onChangePhoneNumber={onChange}
             selectedCountry={selectedCountry}
@@ -185,21 +246,7 @@ const Register = () => {
           />
         )}
       />
-{/*
-      <View style={{ marginTop: 10 }}>
-          
-          <Text>
-            Country:{' '}
-            {selectedCountry ? `${selectedCountry.translations?.eng?.common} (${selectedCountry.cca2})` : 'Not selected'}
-          </Text>
-          <Text>
-            Phone Number: {selectedCountry ? `${selectedCountry.idd?.root} ${phone}` : phone}
-          </Text>
-          <Text>
-            {phone && selectedCountry ? (isValidPhoneNumber(phone, selectedCountry) ? 'true' : 'Please Enter a Valid Phone Number') : 'false'}
-          </Text>
-        </View>
-*/}
+
         <Text className="text-gray-700 font-medium mb-1">Password</Text>
           <Controller
             control={control}

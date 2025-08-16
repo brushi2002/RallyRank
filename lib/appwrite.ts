@@ -46,7 +46,7 @@ import { InteractionManagerStatic, Alert } from "react-native";
   export const databases = new Databases(client);
   export const storage = new Storage(client);
 
-  export async function registerUser(email: string, password: string, name: string, leagueCode: string, phoneNumber: string) {
+  export async function registerUser(email: string, password: string, name: string, leagueCode: string, phoneNumber: string, city: string, county: string, state: string, country: string, deviceType: string) {
     try{
       validateAppwriteConfig();
 
@@ -64,7 +64,6 @@ import { InteractionManagerStatic, Alert } from "react-native";
       console.log('verifying')
       verifyEmail(email);
 
-
       const uniqueId = ID.unique();
 
       console.log('creating account');
@@ -81,6 +80,11 @@ import { InteractionManagerStatic, Alert } from "react-native";
           name: name,
           email: email,
           PhoneNumber: phoneNumber,
+          City: city,
+          County: county,
+          State: state,
+          Country: country,
+          DeviceType: deviceType,
         }
       );
       const playerId = result.$id
