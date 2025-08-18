@@ -7,76 +7,32 @@ import { Redirect, router } from 'expo-router'
 import { Controller, useForm } from 'react-hook-form'
 import { Image } from 'react-native';
 import PhoneInput, {isValidPhoneNumber}  from 'react-native-international-phone-number';
-import * as Location from 'expo-location'
-import GeoCoder from "react-native-geocoding";
+import { LocationData, getLocationData } from '../../lib/geolocationApi';
 
-GeoCoder.init("AIzaSyDCKfOSOeV5L7NP6IvTLqsm0qcXVj2E2RQ"); 
+
+
 
 const Register = () => {
+
   const { refetch, loading, isLoggedIn } = useGlobalContext();
-  
+  const [location, setLocation] = useState<LocationData | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [leagueCode, setLeagueCode] = useState('');
   const [phone, setPhone] = useState('');
   const [selectedCountry, setSelectedCountry] = useState<any>();
-  const [location, setLocation] = useState<any>(null);
-  const [city, setCity] = useState<string>('');
-  const [county, setCounty] = useState<string>('');
-  const [state, setState] = useState<string>('');
-  const [country, setCountry] = useState<string>('');
-  const [deviceType, setDeviceType] = useState<string>('');
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const { control, handleSubmit, formState: { errors }, setError } = useForm<FormData>({mode: 'onChange'});
   useEffect(() => {
-    async function getCurrentLocation() {
-      
-      // Detect device type
-      setDeviceType(Platform.OS);
-      console.log('Device Type:', Platform.OS);
-      
-      let { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== 'granted') {
-        setErrorMsg('Permission to access location was denied');
-        return;
+    const fetchLocation = async () => {
+      try {
+        const locationData = await getLocationData();
+        setLocation(locationData);
+      } catch (error) {
+        console.error('Error fetching location:', error);
+        setLocation(null);
       }
-
-      let location = await Location.getCurrentPositionAsync({});
-      console.log('Location###', location);
-      GeoCoder.from(location.coords.latitude, location.coords.longitude).then(json => {
-        console.log('GeoCoder###', json);
-        
-        if (json.results && json.results.length > 0) {
-          const addressComponents = json.results[0].address_components;
-          let cityName = '';
-          let countyName = '';
-          let stateName = '';
-          let countryName = '';
-          
-          addressComponents.forEach((component: any) => {
-            if (component.types.includes('locality')) {
-              cityName = component.long_name;
-            } else if (component.types.includes('administrative_area_level_2')) {
-              countyName = component.long_name;
-            } else if (component.types.includes('administrative_area_level_1')) {
-              stateName = component.short_name;
-            } else if (component.types.includes('country')) {
-              countryName = component.long_name;
-            }
-          });
-          
-          setCity(cityName);
-          setCounty(countyName);
-          setState(stateName);
-          setCountry(countryName);
-          console.log('City:', cityName, 'County:', countyName, 'State:', stateName, 'Country:', countryName);
-        }
-      }).catch(error => {
-        console.log('GeoCoder Error:', error);
-      });
-      setLocation(location);
-    }
-
-    getCurrentLocation();
+    };
+    fetchLocation();
   }, []);
   interface FormData {
     Email: string;
@@ -120,7 +76,11 @@ const Register = () => {
       setIsLoading(true);
       const regex = /^([a-zA-Z0-9]{5})$/;
 
-      const result = await registerUser(data.Email, data.Password, data.Name, data.LadderCode, data.PhoneNumber, city, county, state, country, deviceType);
+      if (!location) {
+        Alert.alert('Error', 'Location data not available. Please try again.');
+        return;
+      }
+      const result = await registerUser(data.Email, data.Password, data.Name, data.LadderCode, data.PhoneNumber, location.City, location.County, location.State, location.Country, location.DeviceType);
       if(result == null){
         setLeagueCode('Invalid League Code. Please try again.');
         return;

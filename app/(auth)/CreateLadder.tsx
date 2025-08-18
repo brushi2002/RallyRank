@@ -9,6 +9,8 @@ import Purchases, {LOG_LEVEL} from "react-native-purchases";
 import RevenueCatUI, { PAYWALL_RESULT } from "react-native-purchases-ui";
 import { registerUser, doesLadderCodeExist, doesEmailExist } from '../../lib/appwrite'
 import { Controller, useForm } from 'react-hook-form';
+import PhoneInput, {isValidPhoneNumber}  from 'react-native-international-phone-number';
+import { LocationData, getLocationData } from '../../lib/geolocationApi';
 
 interface FormData {
   Email: string;
@@ -30,6 +32,7 @@ async function presentPaywallIfNeeded() {
 }
 
 export default function CreateLadder() {
+  const [location, setLocation] = useState<LocationData | null>(null);
   useEffect(() => {
     Purchases.setLogLevel(LOG_LEVEL.VERBOSE);
 
@@ -38,6 +41,19 @@ export default function CreateLadder() {
     } else if (Platform.OS === 'android') {
        Purchases.configure({apiKey: "goog_vmfFCcruMvGtMyvcXxbDhXMJIHr"});
     }
+
+    const fetchLocation = async () => {
+      try {
+        const locationData = await getLocationData();
+        console.log('Location Data:', locationData);
+        setLocation(locationData);
+      } catch (error) {
+        console.error('Error fetching location:', error);
+        setLocation(null);
+      }
+    };
+
+    fetchLocation();
 
   }, []);
 
@@ -61,6 +77,10 @@ export default function CreateLadder() {
       console.log('Error running server side validations', error);
     }
   }
+
+  function handleSelectedCountry(country: any) {
+    setSelectedCountry(country);
+  }
   //const { user } = useGlobalContext();
   const [ladderName, setLadderName] = useState('');
   const [description, setDescription] = useState('');
@@ -68,6 +88,7 @@ export default function CreateLadder() {
   const [loading, setLoading] = useState(false);
   const [loadingPaywall, setLoadingPaywall] = useState(false);
   const router = useRouter();
+  const [selectedCountry, setSelectedCountry] = useState<any>();
 
   const handleCreateLadder = async (data: FormData) => {
     try {
@@ -77,8 +98,11 @@ export default function CreateLadder() {
      if(!await serverValidation(data, errors))
      {
         return;
-     }
+      }
+     // console.log('yep', location);
+     //tbd- fix this so that user doesn't have to click twice
      if(typeof customerInfo.entitlements.active["Single Purchase"] !== "undefined")
+     //if(true)
      {
         // Grant user "pro" access
         console.log('User has access to create ladders');
@@ -96,9 +120,13 @@ export default function CreateLadder() {
             Description: data.Description,
             LadderCode: data.LadderCode,
             CreateDate: new Date().toISOString(),
+            City: location?.City || '',
+            County: location?.County || '',
+            State: location?.State || '',
+            Country: location?.Country || ''
           });
 
-          const result = await registerUser(data.Email, data.Password, data.LadderName, data.LadderCode, data.PhoneNumber);
+          const result = await registerUser(data.Email, data.Password, data.LadderName, data.LadderCode, data.PhoneNumber, location?.City || '', location?.County || '', location?.State || '', location?.Country || '', location?.DeviceType || '');
     
           console.log('Ladder created: Please share this code with your friends to join the ladder', response);
           
@@ -170,36 +198,20 @@ export default function CreateLadder() {
         <View className="mb-4">
         <Text className="text-gray-700 font-medium mb-1">Phone Number</Text>
         <Controller
-            control={control}
-            name="PhoneNumber"
-            rules={{
-              pattern: {
-                value: /^[2-9]\d{9}$/,
-                message: "Invalid Phone Number. Format: 9876543210"
-              },
-              required: 'Phone Number is Required',
-              minLength: {
-                value: 10,
-                message: 'Phone Number must be at least 10 characters'
-              }
-
-            }}
-            render={({ field: { onChange, onBlur, value } }) => (
-              <TextInput
-                style={styles.input}
-                onBlur={onBlur}
-                onChangeText={onChange}
-                value={value}
-                placeholder="Phone Number"
-              />
-            )}
+        name="PhoneNumber"
+        control={control}
+        render={({field: {onChange, onBlur, value}}) => (
+          <PhoneInput
+            defaultCountry="US"
+            value={value}
+            onChangePhoneNumber={onChange}
+            selectedCountry={selectedCountry}
+            onChangeSelectedCountry={handleSelectedCountry}
+            visibleCountries={['US','AU']}
           />
-          {errors.PhoneNumber && (
-            <Text className="text-red-500 mb-2">
-              {errors.PhoneNumber.message}
-            </Text>
-          )}
-          </View>
+        )}
+      />    
+      </View>
 
           <View className="mb-4">
           <Text className="text-gray-700 font-medium mb-1">Email</Text>
@@ -291,7 +303,7 @@ export default function CreateLadder() {
           </View>
           
           <View className="mb-4">
-          <Text className="text-gray-700 font-medium mb-1">Description</Text>
+          <Text className="text-gray-700 font-medium mb-1">Ladder Description</Text>
           <Controller
             control={control}
             name="Description"

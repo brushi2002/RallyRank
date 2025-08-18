@@ -443,6 +443,10 @@ export const deleteSessions = async () => {
     Description: string;
     LadderCode: string;
     CreateDate: string; 
+    City: string;
+    County: string;
+    State: string;
+    Country: string;
   }) {
     //matchData.league = config.globalLeagueId || '67e6ee1c001a8cded289';
     console.log('create Ladder');
@@ -458,7 +462,7 @@ export const deleteSessions = async () => {
 
       return result;
     } catch (error) {
-      console.error('Error creating league result:', error);
+      console.error('Error creating league:', error);
       throw error;
     }
   }
