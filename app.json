@@ -2,7 +2,7 @@
   "expo": {
     "name": "Rally Rank",
     "slug": "rally-rank",
-    "version": "2.0.3",
+    "version": "2.0.4",
     "orientation": "portrait",
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
@@ -17,7 +17,8 @@
       "icon": "./assets/images/icon.png",
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false,
-        "NSLocationWhenInUseUsageDescription": "This app needs access to your location to show you the nearest courts."
+        "NSLocationWhenInUseUsageDescription": "This app needs access to your location to show you the nearest courts.",
+        "NSLocationAlwaysAndWhenInUseUsageDescription": "This app needs access to your location to show you the nearest courts."
       },
       "bundleIdentifier": "com.tennisapp.app"
     },
