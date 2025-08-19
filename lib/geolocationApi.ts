@@ -2,7 +2,7 @@ import GeoCoder from "react-native-geocoding";
 import { Platform } from "react-native";
 import * as Location from 'expo-location'
 
-GeoCoder.init("AIzaSyDCKfOSOeV5L7NP6IvTLqsm0qcXVj2E2RQ"); 
+GeoCoder.init(process.env.GOOGLE_API_KEY || ''); 
 
 interface LocationData {
     City: string;
