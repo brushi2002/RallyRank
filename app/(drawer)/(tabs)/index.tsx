@@ -123,7 +123,12 @@ function HomeScreenContent() {
           <View style={styles.playerSection}>
             <UserAvatar isWinner={isPlayer1Winner} />
             <Text style={styles.playerName}>{match.player_id1.name}</Text>
-            <View style={styles.scoresColumn}>
+          </View>
+          
+          {/* VS Section with Centered Score */}
+          <View style={styles.vsSection}>
+            <Text style={styles.vsText}>VS</Text>
+            <View style={styles.centeredScoresColumn}>
               <Text style={styles.scoreText}>{match.p1set1score}-{match.p2set1score}</Text>
               {(match.p1set2score !== undefined && match.p1set2score !== 0) && (
                 <Text style={styles.scoreText}>{match.p1set2score}-{match.p2set2score}</Text>
@@ -134,24 +139,10 @@ function HomeScreenContent() {
             </View>
           </View>
           
-          {/* VS Section */}
-          <View style={styles.vsSection}>
-            <Text style={styles.vsText}>VS</Text>
-          </View>
-          
           {/* Player 2 */}
           <View style={styles.playerSection}>
             <UserAvatar isWinner={!isPlayer1Winner} />
             <Text style={styles.playerName}>{match.player_id2.name}</Text>
-            <View style={styles.scoresColumn}>
-              <Text style={styles.scoreText}>{match.p2set1score}-{match.p1set1score}</Text>
-              {(match.p2set2score !== undefined && match.p2set2score !== 0) && (
-                <Text style={styles.scoreText}>{match.p2set2score}-{match.p1set2score}</Text>
-              )}
-              {(match.p2set3score !== undefined && match.p2set3score !== 0) && (
-                <Text style={styles.scoreText}>{match.p2set3score}-{match.p1set3score}</Text>
-              )}
-            </View>
           </View>
         </View>
         
@@ -360,8 +351,9 @@ const styles = StyleSheet.create({
     marginBottom: 8,
     fontFamily: 'Rubik',
   },
-  scoresColumn: {
+  centeredScoresColumn: {
     alignItems: 'center',
+    marginTop: 8,
   },
   scoreText: {
     fontSize: 14,

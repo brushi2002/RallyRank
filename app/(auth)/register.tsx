@@ -1,16 +1,14 @@
-import { View, Text, ScrollView, Alert, TouchableOpacity, StyleSheet, TextInput } from 'react-native'
+import { View, Text, ScrollView, Alert, TouchableOpacity, StyleSheet, TextInput, Image } from 'react-native'
 import React, { useState, useEffect } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import { registerUser, doesLadderCodeExist, doesEmailExist, verifyEmail } from '../../lib/appwrite'
+import { registerUser, doesLadderCodeExist, doesEmailExist } from '../../lib/appwrite'
 import { useGlobalContext } from '../../lib/global-provider'
 import { Redirect, router } from 'expo-router'
 import { Controller, useForm } from 'react-hook-form'
-import PhoneInput, {isValidPhoneNumber}  from 'react-native-international-phone-number';
+import PhoneInput from 'react-native-international-phone-number';
 import { LocationData, getLocationData } from '../../lib/geolocationApi';
 import { StatusBar } from 'expo-status-bar';
-import { Ionicons } from '@expo/vector-icons';
-
-
+import { BlurView } from 'expo-blur';
 
 
 const Register = () => {
@@ -40,8 +38,6 @@ const Register = () => {
     Email: string;
     Password: string;
     PhoneNumber: string;
-    LadderName: string;
-    LadderDescription: string;
     LadderCode: string;
   }
 
@@ -107,350 +103,393 @@ const Register = () => {
     setSelectedCountry(country);
   }
 
-    return (
-      <SafeAreaView style={styles.container}>
-        <StatusBar style="dark" />
-        
-        {/* Header */}
-        <View style={styles.header}>
+  return (
+    <View style={styles.container}>
+      <StatusBar hidden={true} />
+      
+      {/* Background */}
+      <View style={styles.background}>
+
+        {/* App Title */}
+        <View style={styles.titleContainer}>
+          <Text style={styles.appTitle}>Rally Rank</Text>
+          <Text style={styles.tagline}>Your game, your rank, your rally.</Text>
         </View>
 
-        {/* Title */}
-        <View style={styles.titleContainer}>
-          <Text style={styles.title}>Register & Create New Ladder</Text>
-        </View>
+        {/* Tennis Ball Image */}
+        <Image
+          source={require('../../assets/images/TennisBall.png')}
+          style={styles.tennisBall}
+          resizeMode="cover"
+        />
+
+        {/* Tennis Court Background Image */}
+        <Image
+          source={require('../../assets/images/SignUpScreenBackground.png')}
+          style={styles.tennisCourtImage}
+          resizeMode="cover"
+          height={492}
+        />
 
         {/* Form Container */}
-        <ScrollView style={styles.scrollContainer} showsVerticalScrollIndicator={false}>
-          
-          {/* Full Name */}
-          <View style={styles.inputGroup}>
-            <Text style={styles.inputLabel}>Full Name</Text>
-            <Controller
-              control={control}
-              name="Name"
-              rules={{
-                required: 'Name is Required',
-                minLength: {
-                  value: 2,
-                  message: 'Name must be at least 2 characters'
-                }
-              }}
-              render={({ field: { onChange, onBlur, value } }) => (
-                <TextInput
-                  style={styles.input}
-                  onBlur={onBlur}
-                  onChangeText={onChange}
-                  value={value}
-                  placeholder="Full Name"
-                  placeholderTextColor="#999"
-                />
-              )}
-            />
-            {errors.Name && (
-              <Text style={styles.errorText}>{errors.Name.message}</Text>
-            )}
-          </View>
-
-          {/* Email */}
-          <View style={styles.inputGroup}>
-            <Text style={styles.inputLabel}>Email</Text>
-            <Controller
-              control={control}
-              name="Email"
-              rules={{
-                required: 'Email is Required',
-                pattern: {
-                  value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                  message: "Invalid email format"
-                }
-              }}
-              render={({ field: { onChange, onBlur, value } }) => (
-                <TextInput
-                  textContentType="emailAddress"
-                  style={styles.input}
-                  onBlur={onBlur}
-                  onChangeText={onChange}
-                  value={value}
-                  placeholder="Email"
-                  placeholderTextColor="#999"
-                  keyboardType="email-address"
-                  autoCapitalize="none"
-                />
-              )}
-            />
-            {errors.Email && (
-              <Text style={styles.errorText}>{errors.Email.message}</Text>
-            )}
-          </View>
-
-          {/* Password */}
-          <View style={styles.inputGroup}>
-            <Text style={styles.inputLabel}>Password</Text>
-            <Controller
-              control={control}
-              name="Password"
-              rules={{
-                required: 'Password is Required',
-                minLength: {
-                  value: 8,
-                  message: 'Password must be at least 8 characters'
-                }
-              }}
-              render={({ field: { onChange, onBlur, value } }) => (
-                <TextInput
-                  textContentType="password"
-                  style={styles.input}
-                  onBlur={onBlur}
-                  onChangeText={onChange}
-                  value={value}
-                  placeholder="Password"
-                  placeholderTextColor="#999"
-                  secureTextEntry
-                />
-              )}
-            />
-            {errors.Password && (
-              <Text style={styles.errorText}>{errors.Password.message}</Text>
-            )}
-          </View>
-
-          {/* Phone Number */}
-          <View style={styles.inputGroup}>
-            <Text style={styles.inputLabel}>Phone Number</Text>
-            <Controller
-              name="PhoneNumber"
-              control={control}
-              rules={{ required: 'Phone number is required' }}
-              render={({ field: { onChange, value } }) => (
-                <View style={styles.phoneInputContainer}>
-                  <PhoneInput
-                    defaultCountry="US"
-                    value={value}
-                    onChangePhoneNumber={onChange}
-                    selectedCountry={selectedCountry}
-                    onChangeSelectedCountry={setSelectedCountry}
-                    visibleCountries={['US', 'AU']}
-                    phoneInputStyles={{
-                      container: styles.phoneContainer,
-                      input: styles.phoneInput,
-                    }}
-                  />
-                </View>
-              )}
-            />
-            {errors.PhoneNumber && (
-              <Text style={styles.errorText}>{errors.PhoneNumber.message}</Text>
-            )}
-          </View>
-
-          {/* Ladder Name */}
-          <View style={styles.inputGroup}>
-            <Text style={styles.inputLabel}>Ladder Name</Text>
-            <Controller
-              control={control}
-              name="LadderName"
-              rules={{
-                required: 'Ladder Name is Required',
-                minLength: {
-                  value: 2,
-                  message: 'Ladder Name must be at least 2 characters'
-                }
-              }}
-              render={({ field: { onChange, onBlur, value } }) => (
-                <TextInput
-                  style={styles.input}
-                  onBlur={onBlur}
-                  onChangeText={onChange}
-                  value={value}
-                  placeholder="Ladder Name"
-                  placeholderTextColor="#999"
-                />
-              )}
-            />
-            {errors.LadderName && (
-              <Text style={styles.errorText}>{errors.LadderName.message}</Text>
-            )}
-          </View>
-
-          {/* Ladder Description */}
-          <View style={styles.inputGroup}>
-            <Text style={styles.inputLabel}>Ladder Description</Text>
-            <Controller
-              control={control}
-              name="LadderDescription"
-              rules={{
-                required: 'Ladder Description is Required',
-                minLength: {
-                  value: 10,
-                  message: 'Ladder Description must be at least 10 characters'
-                }
-              }}
-              render={({ field: { onChange, onBlur, value } }) => (
-                <TextInput
-                  style={styles.input}
-                  onBlur={onBlur}
-                  onChangeText={onChange}
-                  value={value}
-                  placeholder="Ladder Description"
-                  placeholderTextColor="#999"
-                />
-              )}
-            />
-            {errors.LadderDescription && (
-              <Text style={styles.errorText}>{errors.LadderDescription.message}</Text>
-            )}
-          </View>
-
-          {/* Ladder Code */}
-          <View style={styles.inputGroup}>
-            <Text style={styles.inputLabel}>Ladder Code (For Inviting Members)</Text>
-            <Controller
-              control={control}
-              name="LadderCode"
-              rules={{
-                required: 'Ladder Code is Required',
-                minLength: {
-                  value: 4,
-                  message: 'Ladder Code must be 4 characters long'
-                }
-              }}
-              render={({ field: { onChange, onBlur, value } }) => (
-                <TextInput
-                  style={styles.input}
-                  onBlur={onBlur}
-                  onChangeText={onChange}
-                  value={value}
-                  placeholder="Ladder Code"
-                  placeholderTextColor="#999"
-                  maxLength={4}
-                  autoCapitalize="characters"
-                />
-              )}
-            />
-            {errors.LadderCode && (
-              <Text style={styles.errorText}>{errors.LadderCode.message}</Text>
-            )}
-          </View>
-
-          {/* Submit Button */}
-          <TouchableOpacity
-            style={styles.submitButton}
-            onPress={handleSubmit(handleRegister)}
-            disabled={isLoading}
-          >
-            <Text style={styles.submitButtonText}>
-              {isLoading ? 'Registering...' : 'Register + Create Ladder'}
+        <View style={styles.formContainer} >
+          <BlurView intensity={30} style={styles.blurContainer}>
+            
+            {/* Welcome Text */}
+            <Text style={styles.welcomeTitle}>Welcome Tennis Champ!</Text>
+            <Text style={styles.welcomeSubtitle}>
+              Create your account to join the tennis ladder community.
             </Text>
-          </TouchableOpacity>
-          
-        </ScrollView>
-      </SafeAreaView>
-    );
+
+            <ScrollView style={styles.formScrollView} showsVerticalScrollIndicator={false}>
+              {/* Full Name */}
+              <View style={styles.inputGroup}>
+                <Text style={styles.inputLabel}>Full Name</Text>
+                <Controller
+                  control={control}
+                  name="Name"
+                  rules={{
+                    required: 'Name is Required',
+                    minLength: {
+                      value: 2,
+                      message: 'Name must be at least 2 characters'
+                    }
+                  }}
+                  render={({ field: { onChange, onBlur, value } }) => (
+                    <TextInput
+                      style={styles.input}
+                      onBlur={onBlur}
+                      onChangeText={onChange}
+                      value={value}
+                      placeholder=""
+                      placeholderTextColor="rgba(255,255,255,0.4)"
+                    />
+                  )}
+                />
+                <View style={styles.inputUnderline} />
+                {errors.Name && (
+                  <Text style={styles.errorText}>{errors.Name.message}</Text>
+                )}
+              </View>
+
+              {/* Email */}
+              <View style={styles.inputGroup}>
+                <Text style={styles.inputLabel}>Email</Text>
+                <Controller
+                  control={control}
+                  name="Email"
+                  rules={{
+                    required: 'Email is Required',
+                    pattern: {
+                      value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                      message: "Invalid email format"
+                    }
+                  }}
+                  render={({ field: { onChange, onBlur, value } }) => (
+                    <TextInput
+                      textContentType="emailAddress"
+                      style={styles.input}
+                      onBlur={onBlur}
+                      onChangeText={onChange}
+                      value={value}
+                      placeholder=""
+                      placeholderTextColor="rgba(255,255,255,0.4)"
+                      keyboardType="email-address"
+                      autoCapitalize="none"
+                    />
+                  )}
+                />
+                <View style={styles.inputUnderline} />
+                {errors.Email && (
+                  <Text style={styles.errorText}>{errors.Email.message}</Text>
+                )}
+              </View>
+
+              {/* Password */}
+              <View style={styles.inputGroup}>
+                <Text style={styles.inputLabel}>Password</Text>
+                <Controller
+                  control={control}
+                  name="Password"
+                  rules={{
+                    required: 'Password is Required',
+                    minLength: {
+                      value: 8,
+                      message: 'Password must be at least 8 characters'
+                    }
+                  }}
+                  render={({ field: { onChange, onBlur, value } }) => (
+                    <TextInput
+                      textContentType="password"
+                      style={styles.input}
+                      onBlur={onBlur}
+                      onChangeText={onChange}
+                      value={value}
+                      placeholder=""
+                      placeholderTextColor="rgba(255,255,255,0.4)"
+                      secureTextEntry
+                    />
+                  )}
+                />
+                <View style={styles.inputUnderline} />
+                {errors.Password && (
+                  <Text style={styles.errorText}>{errors.Password.message}</Text>
+                )}
+              </View>
+
+              {/* Phone Number */}
+              <View style={styles.inputGroup}>
+                <Text style={styles.inputLabel}>Phone Number</Text>
+                <Controller
+                  name="PhoneNumber"
+                  control={control}
+                  rules={{ required: 'Phone number is required' }}
+                  render={({ field: { onChange, value } }) => (
+                    <View style={styles.phoneInputContainer}>
+                      <PhoneInput
+                        defaultCountry="US"
+                        value={value}
+                        onChangePhoneNumber={onChange}
+                        selectedCountry={selectedCountry}
+                        onChangeSelectedCountry={setSelectedCountry}
+                        visibleCountries={['US', 'AU']}
+                        phoneInputStyles={{
+                          container: styles.phoneContainer,
+                          input: styles.phoneInput,
+                        }}
+                      />
+                    </View>
+                  )}
+                />
+                <View style={styles.inputUnderline} />
+                {errors.PhoneNumber && (
+                  <Text style={styles.errorText}>{errors.PhoneNumber.message}</Text>
+                )}
+              </View>
+
+              {/* Ladder Code */}
+              <View style={styles.inputGroup}>
+                <Text style={styles.inputLabel}>Ladder Code (For Inviting Members)</Text>
+                <Controller
+                  control={control}
+                  name="LadderCode"
+                  rules={{
+                    required: 'Ladder Code is Required',
+                    minLength: {
+                      value: 4,
+                      message: 'Ladder Code must be 4 characters long'
+                    }
+                  }}
+                  render={({ field: { onChange, onBlur, value } }) => (
+                    <TextInput
+                      style={styles.input}
+                      onBlur={onBlur}
+                      onChangeText={onChange}
+                      value={value}
+                      placeholder=""
+                      placeholderTextColor="rgba(255,255,255,0.4)"
+                      maxLength={4}
+                      autoCapitalize="characters"
+                    />
+                  )}
+                />
+                <View style={styles.inputUnderline} />
+                {errors.LadderCode && (
+                  <Text style={styles.errorText}>{errors.LadderCode.message}</Text>
+                )}
+              </View>
+
+              {/* Submit Button */}
+              <TouchableOpacity
+                style={styles.submitButton}
+                onPress={handleSubmit(handleRegister)}
+                disabled={isLoading}
+              >
+                <Text style={styles.submitButtonText}>
+                  {isLoading ? 'Registering...' : 'Register'}
+                </Text>
+              </TouchableOpacity>
+
+              {/* Sign In Link */}
+              <TouchableOpacity onPress={() => router.push('/sign-in')} style={styles.signInContainer}>
+                <Text style={styles.signInText}>
+                  Already have an account? 
+                  <Text style={styles.signInLinkText}> Click here to sign in</Text>
+                </Text>
+              </TouchableOpacity>
+            </ScrollView>
+
+          </BlurView>
+        </View>
+      </View>
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F0F8F0',
+    backgroundColor: '#316536',
   },
-  header: {
-    paddingHorizontal: 20,
-    paddingTop: 10,
-    paddingBottom: 20,
-  },
-  backButton: {
-    width: 40,
-    height: 40,
-    justifyContent: 'center',
-    alignItems: 'flex-start',
+  background: {
+    flex: 1,
+    backgroundColor: '#316536',
+    position: 'relative',
   },
   titleContainer: {
-    paddingHorizontal: 20,
-    marginBottom: 30,
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: '600',
-    color: '#333',
-    textAlign: 'left',
-  },
-  scrollContainer: {
-    flex: 1,
-    paddingHorizontal: 20,
-  },
-  inputGroup: {
+    alignItems: 'center',
+    marginTop: 60,
     marginBottom: 20,
   },
-  inputLabel: {
-    fontSize: 16,
+  appTitle: {
+    fontSize: 48,
     fontWeight: '400',
-    color: '#666',
+    color: '#FFF',
+    fontFamily: 'Rubik',
+    textAlign: 'center',
+  },
+  tagline: {
+    fontSize: 14,
+    fontWeight: '400',
+    color: '#FFF',
+    fontFamily: 'Rubik',
+    textAlign: 'center',
+    marginTop: 8,
+  },
+  tennisBall: {
+    position: 'absolute',
+    top: 150,
+    right: -20,
+    width: 180,
+    height: 126,
+    transform: [{ rotate: '17.812deg' }],
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+  },
+  tennisCourtImage: {
+    position: 'absolute',
+    bottom: -100,
+    left: -40,
+    width: 450,
+    height: 250,
+    opacity: 0.8,
+  },
+  formContainer: {
+    position: 'absolute',
+    left: 0,
+    top: 196,
+    width: 348,
+    height: 600,
+    borderTopRightRadius: 30,
+    borderBottomRightRadius: 30,
+    overflow: 'hidden',
+  },
+  blurContainer: {
+    flex: 1,
+    backgroundColor: 'rgba(255, 255, 255, 0.08)',
+    padding: 20,
+    borderTopRightRadius: 30,
+    borderBottomRightRadius: 30,
+  },
+  welcomeTitle: {
+    fontSize: 20,
+    fontWeight: '400',
+    color: '#FFF',
+    fontFamily: 'Rubik',
     marginBottom: 8,
   },
+  welcomeSubtitle: {
+    fontSize: 12,
+    fontWeight: '400',
+    color: '#FFF',
+    fontFamily: 'Rubik',
+    marginBottom: 20,
+    lineHeight: 16,
+  },
+  formScrollView: {
+    flex: 1,
+    marginBottom: 20,
+  },
+  inputGroup: {
+    marginBottom: 15,
+  },
+  inputLabel: {
+    fontSize: 14,
+    fontWeight: '400',
+    color: 'rgba(255, 255, 255, 0.6)',
+    fontFamily: 'Rubik',
+    marginBottom: 2,
+  },
   input: {
-    backgroundColor: '#FFF',
-    borderRadius: 8,
-    paddingHorizontal: 16,
-    paddingVertical: 16,
+    height: 30,
+    color: '#FFF',
     fontSize: 16,
-    color: '#333',
-    borderWidth: 1,
-    borderColor: '#E0E0E0',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
-    shadowRadius: 2,
-    elevation: 2,
+    fontFamily: 'Rubik',
+    paddingVertical: 0,
+  },
+  inputUnderline: {
+    height: 1,
+    backgroundColor: '#FFF',
+    marginTop: 5,
+    width: 227,
   },
   phoneInputContainer: {
-    backgroundColor: '#FFF',
-    borderRadius: 8,
-    borderWidth: 1,
-    borderColor: '#E0E0E0',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
-    shadowRadius: 2,
-    elevation: 2,
-    paddingHorizontal: 16,
-    paddingVertical: 4,
+    backgroundColor: 'transparent',
   },
   phoneContainer: {
     backgroundColor: 'transparent',
     borderWidth: 0,
-    height: 48,
+    height: 30,
   },
   phoneInput: {
     backgroundColor: 'transparent',
-    color: '#333',
+    color: '#FFF',
     fontSize: 16,
-    height: 48,
+    fontFamily: 'Rubik',
   },
   errorText: {
-    color: '#FF3B30',
-    fontSize: 14,
+    color: '#FF6B6B',
+    fontSize: 12,
     marginTop: 4,
+    fontFamily: 'Rubik',
   },
   submitButton: {
-    backgroundColor: '#4CAF50',
-    borderRadius: 25,
-    paddingVertical: 16,
-    marginTop: 20,
-    marginBottom: 40,
+    width: 161,
+    height: 35,
+    backgroundColor: '#FFF',
+    borderRadius: 30,
+    justifyContent: 'center',
+    alignItems: 'center',
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.25,
     shadowRadius: 4,
-    elevation: 3,
+    elevation: 4,
+    marginTop: 10,
   },
   submitButtonText: {
+    color: '#316536',
+    fontSize: 20,
+    fontWeight: '400',
+    fontFamily: 'Rubik',
+  },
+  signInContainer: {
+    alignItems: 'center',
+    marginTop: 15,
+  },
+  signInText: {
     color: '#FFF',
-    fontSize: 18,
-    fontWeight: '600',
+    fontSize: 14,
+    fontWeight: '400',
+    fontFamily: 'Rubik',
     textAlign: 'center',
   },
+  signInLinkText: {
+    color: '#EFEEBC',
+    textDecorationLine: 'underline',
+  },
 });
-
 
 export default Register; 

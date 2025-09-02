@@ -108,9 +108,9 @@ const SignIn = () => {
           <BlurView intensity={30} style={styles.blurContainer}>
             
             {/* Welcome Text */}
-            <Text style={styles.welcomeTitle}>Welcome Tennis Champ!</Text>
+            <Text style={styles.welcomeTitle}>Welcome Back!</Text>
             <Text style={styles.welcomeSubtitle}>
-              In order to create a ladder and track your progress, we need some info from you first.
+              Please login to view your Ladder or Enter Scores.
             </Text>
 
             <ScrollView style={styles.formScrollView} showsVerticalScrollIndicator={false}>
@@ -192,10 +192,24 @@ const SignIn = () => {
               </TouchableOpacity>
 
               {/* Sign In Link */}
-              <TouchableOpacity onPress={() => router.push('/register')} style={styles.signInContainer}>
                 <Text style={styles.signInText}>
-                  Don't have an account?
-                  <Text style={styles.signInLinkText}> Click here to Register</Text>
+                  Don't have an account? </Text>
+                  <TouchableOpacity onPress={() => router.push('/register')} style={styles.signInContainer}>
+                    <Text style={styles.signInLinkText}> Click here to Register</Text>
+                  </TouchableOpacity>
+
+
+
+            {/* Sign In Link */}
+              <Text style={[styles.signInText, { marginTop: 15 }]}>If you would like to register and create a Ladder for your friends to join. </Text>
+              <TouchableOpacity onPress={() => router.push('/register')} style={styles.signInContainer}>
+                  <Text style={styles.signInLinkText}> Click Here to Register and Create a Ladder.</Text>
+              </TouchableOpacity>
+
+                <TouchableOpacity onPress={() => router.push('/CreateLadder')} style={styles.signInContainer}>
+
+                <Text style={[styles.signInText, { marginTop: 20 }]}>
+                  If you are interested in testing, please send me an email eric@ericsb.com
                 </Text>
               </TouchableOpacity>
             </ScrollView>
@@ -414,7 +428,6 @@ const styles = StyleSheet.create({
   },
   signInContainer: {
     alignItems: 'center',
-    marginTop: 15,
   },
   signInText: {
     color: '#FFF',

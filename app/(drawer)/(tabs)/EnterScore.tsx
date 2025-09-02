@@ -195,7 +195,7 @@ const styles = StyleSheet.create({
   },
   headerContainer: {
     paddingHorizontal: 38,
-    paddingTop: 68,
+    paddingTop: 24,
     paddingBottom: 18,
   },
   headerTitle: {
@@ -212,7 +212,7 @@ const styles = StyleSheet.create({
   inputField: {
     height: 46,
     paddingHorizontal: 14,
-    paddingVertical: 27,
+    paddingVertical: 12,
     borderRadius: 10,
     borderWidth: 1,
     borderColor: '#EDF1F3',
@@ -220,26 +220,28 @@ const styles = StyleSheet.create({
     shadowColor: '#E4E5E7',
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.24,
-    shadowRadius: 2,
-    elevation: 2,
+    shadowRadius: 4,
+    elevation: 4,
+    justifyContent: 'center',
   },
   inputText: {
     fontFamily: 'Inter',
-    fontSize: 14,
+    fontSize: 16,
     fontWeight: '500',
-    color: '#1A1C1E',
-    lineHeight: 19.6,
+    color: '#316536',
+    lineHeight: 20,
     letterSpacing: -0.14,
   },
   scoresContainer: {
     paddingHorizontal: 38,
+    marginTop: -4,
   },
   scoresTitle: {
     fontFamily: 'Rubik',
     fontSize: 20,
     fontWeight: '400',
     color: '#316536',
-    marginBottom: 12,
+    marginBottom: 8,
   },
   setContainer: {
     marginBottom: 24,
@@ -661,17 +663,26 @@ export default function EnterScore() {
               ) : (
                 <Picker
                   selectedValue={selectedOpponent}
-                  onValueChange={(itemValue: string, itemPosition: number) => {
-                    setSelectedOpponentName(playersData?.documents[itemPosition-1] ? playersData?.documents[itemPosition-1].player.name : 'Name');
+                  onValueChange={(itemValue: string) => {
+                    console.log('Selected itemValue:', itemValue);
                     setSelectedOpponent(itemValue);
+                    if (itemValue && playersData?.documents) {
+                      const selectedPlayer = playersData.documents.find((member: any) => member.player.$id === itemValue);
+                      console.log('Found player:', selectedPlayer?.player.name);
+                      setSelectedOpponentName(selectedPlayer ? selectedPlayer.player.name : 'Name');
+                    } else {
+                      setSelectedOpponentName('Name');
+                    }
+                    setShowPicker(false);
                   }}
                   style={{ height: 200 }}
                   itemStyle={{ fontSize: 16 }}
                 >
                   <Picker.Item
-                    label="Select an opponent"
+                    label="Select opponent"
                     value=""
                     color="#666"
+
                   />
                   {playersData?.documents?.map((member: any) => (
                     user && user.$id !== member.player.$id && (
