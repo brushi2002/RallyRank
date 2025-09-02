@@ -1,7 +1,7 @@
 import GeoCoder from "react-native-geocoding";
 import { Platform } from "react-native";
 import * as Location from 'expo-location'
-
+console.log('GOOGLE_API_KEY:', process.env.GOOGLE_API_KEY);
 GeoCoder.init(process.env.GOOGLE_API_KEY || ''); 
 
 interface LocationData {
@@ -22,7 +22,7 @@ interface LocationData {
     };
     try{
         console.log('Device Type:', lData.DeviceType);
-    
+      
         let { status } = await Location.requestForegroundPermissionsAsync();
         if (status !== 'granted') {
             console.error('Permission to access location was denied');

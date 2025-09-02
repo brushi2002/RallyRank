@@ -1,4 +1,3 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import 'react-native-url-polyfill/auto';
 import { useFonts } from 'expo-font';
 import { Stack, Slot } from 'expo-router';
@@ -9,7 +8,6 @@ import 'react-native-reanimated';
 import 'react-native-gesture-handler';
 import { GlobalProvider } from '../lib/global-provider';
 import '../global.css'
-console.log('CSS imported');
 
 import { useColorScheme } from '../hooks/useColorScheme';
 
@@ -19,9 +17,7 @@ import { useColorScheme } from '../hooks/useColorScheme';
 export default function RootLayout() {
   return (
     <GlobalProvider>
-      <Stack screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="(root)" />
-      </Stack>
+        <Slot />
     </GlobalProvider>
   );
 }

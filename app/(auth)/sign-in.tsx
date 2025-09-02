@@ -1,24 +1,26 @@
-import { View, Text, ScrollView, Image, Alert, TouchableOpacity, StyleSheet, TextInput, Dimensions, KeyboardAvoidingView, Platform } from 'react-native'
+import { View, Text, ScrollView, Image, Alert, TouchableOpacity, StyleSheet, TextInput, Dimensions, KeyboardAvoidingView, Platform, StatusBar } from 'react-native'
 import * as React from 'react'
 import { useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import { loginwithEmail } from '../../lib/appwrite'
+import { registerUser, doesLadderCodeExist, doesEmailExist } from '../../lib/appwrite'
 import { useGlobalContext } from '../../lib/global-provider'
 import { Redirect, router } from 'expo-router'
 import { Controller, useForm } from 'react-hook-form'
-import Carousel from 'react-native-reanimated-carousel'
-import Purchases, {LOG_LEVEL} from "react-native-purchases";
-import OnboardingFlow from '../../components/OnBoardingFlow';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import PhoneInput from 'react-native-international-phone-number'
+import { LocationData, getLocationData } from '../../lib/geolocationApi'
+import { BlurView } from 'expo-blur'
+import AsyncStorage from '@react-native-async-storage/async-storage'
+import OnboardingFlow from '../../components/OnBoardingFlow'
+import { loginwithEmail } from '../../lib/appwrite'
 
-
-
-
-const SignIn = ({showHeaderImage = true}: {showHeaderImage?: boolean}) => {
+const SignIn = () => {
   const { refetch, loading, isLoggedIn } = useGlobalContext();
+  const [location, setLocation] = useState<LocationData | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [selectedCountry, setSelectedCountry] = useState<any>();
   const [showOnboarding, setShowOnboarding] = useState(true);
   const width = Dimensions.get('window').width;
+  const height = Dimensions.get('window').height;
 
   // Check onboarding status on mount
   React.useEffect(() => {
@@ -36,21 +38,14 @@ const SignIn = ({showHeaderImage = true}: {showHeaderImage?: boolean}) => {
     checkOnboardingStatus();
   }, []);
 
-  const handleOnboardingComplete = async () => {
+   const handleOnboardingComplete = async () => {
     await AsyncStorage.setItem('hasSeenOnboarding', 'true');
     setShowOnboarding(false);
     // Redirect to register page for first-time users
     router.push('/(auth)/register');
   };
-  
-  // Sample images for the carousel - using existing images for now
-  const images = [
-    { id: 1, source: require('../../assets/images/tennis1.jpg') },
-    { id: 2, source: require('../../assets/images/tennis2.jpg') },
-    { id: 3, source: require('../../assets/images/tennis3.jpg') },
-  ];
 
-  interface FormData {
+ interface FormData {
     Email: string;
     Password: string;
   }
@@ -81,136 +76,356 @@ const SignIn = ({showHeaderImage = true}: {showHeaderImage?: boolean}) => {
   };
 
   return (
-
-    <SafeAreaView className="bg-white flex-1">
-      <ScrollView pointerEvents="box-none" className="flex-1">
-
-      {/* Welcome Text */}
-      {showHeaderImage && (
-      <View className="flex-col items-center mt-8 mb-4">
-        <Text className="text-base text-black">Welcome to</Text>
-        <Text className="text-3xl font-bold" style={{ color: '#2E8B57' }}>Rally Rank</Text>
-
-        {/* Simple Image Display */}
-        <View className="h-48 mb-8 justify-center items-center">
-          <Image
-            source={images[0].source}
-            style={{ width: width - 40, height: 180, borderRadius: 10 }}
-            resizeMode="cover"
-          />
-        </View> 
-        </View>
-        )}
-
-        {/* Login Form */}
-        <KeyboardAvoidingView className="px-8"
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
-          <Text className="text-center text-gray-600 mb-4">
-            Sign in to your account
-          </Text>
-          
-          <Controller
-            control={control}
-            name="Email"
-            rules={{
-              required: 'Email is Required',
-              pattern: {
-                value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                message: "Invalid email format"
-              }
-            }}
-            render={({ field: { onChange, onBlur, value } }) => (
-              <TextInput
-              textContentType="emailAddress"
-                style={styles.textInput}
-                onBlur={onBlur}
-                onChangeText={onChange}
-                value={value}
-                placeholder="Email"
-                keyboardType="email-address"
-                autoCapitalize="none"
-              />
-            )}
-          />
-          {errors.Email && (
-            <Text className="text-red-500 mb-2">
-              {errors.Email.message}
-            </Text>
-          )}
-
-          <Controller
-            control={control}
-            name="Password"
-            rules={{
-              required: 'Password is Required'
-            }}
-            render={({ field: { onChange, onBlur, value } }) => (
-              <TextInput
-                textContentType="password"
-                style={styles.textInput}
-                onBlur={onBlur}
-                onChangeText={onChange}
-                value={value}
-                placeholder="Password"
-                secureTextEntry
-              />
-            )}
-          />
-          {errors.Password && (
-            <Text className="text-red-500 mb-2">
-              {errors.Password.message}
-            </Text>
-          )}
-
-          <TouchableOpacity
-            className="bg-gray-200 py-4 rounded-lg mt-4"
-            onPress={handleSubmit(handleLogin)}
-            disabled={isLoading}
-          >
-            <Text className="text-center text-gray-800 text-lg">
-              {isLoading ? 'Logging in...' : 'Login'}
-            </Text>
-          </TouchableOpacity>
-          {/* Sign Up Link */}
-          <View className="mt-6">
-            <Text className="text-center text-gray-600">
-              Don't have an account?{' '}
-              <Text 
-                className="text-blue-500 font-semibold"
-                onPress={() => router.push('/(auth)/register')}
-              >
-                Sign up
-              </Text>
-            </Text>
-          </View>
-        </KeyboardAvoidingView>
-        <View>
-          </View>
-      {/* Your login form */}
+    <View style={styles.container}>
+      <StatusBar hidden={true} />
       
-      {/* Debug info - remove in production 
-      <View style={{ padding: 10, backgroundColor: 'yellow' }}>
-        <Text>Debug Info:</Text>
-        <Text>Endpoint: {process.env.EXPO_PUBLIC_APPWRITE_ENDPOINT || 'NOT SET'}</Text>
-        <Text>Project: {process.env.EXPO_PUBLIC_APPWRITE_PROJECT_ID || 'NOT SET'}</Text>
+      {/* Background */}
+      <View style={styles.background}>
+
+        {/* App Title */}
+        <View style={styles.titleContainer}>
+          <Text style={styles.appTitle}>Rally Rank</Text>
+          <Text style={styles.tagline}>Your game, your rank, your rally.</Text>
+        </View>
+
+        {/* Tennis Ball Image */}
+        <Image
+          source={require('../../assets/images/TennisBall.png')}
+          style={styles.tennisBall}
+          resizeMode="cover"
+        />
+
+        {/* Tennis Court Background Image */}
+        <Image
+          source={require('../../assets/images/SignInScreenBackground.png')}
+          style={styles.tennisCourtImage}
+          resizeMode="cover"
+          height={492}
+        />
+
+        {/* Form Container */}
+        <View style={styles.formContainer} >
+          <BlurView intensity={30} style={styles.blurContainer}>
+            
+            {/* Welcome Text */}
+            <Text style={styles.welcomeTitle}>Welcome Tennis Champ!</Text>
+            <Text style={styles.welcomeSubtitle}>
+              In order to create a ladder and track your progress, we need some info from you first.
+            </Text>
+
+            <ScrollView style={styles.formScrollView} showsVerticalScrollIndicator={false}>
+
+              {/* Email */}
+              <View style={styles.inputGroup}>
+                <Text style={styles.inputLabel}>E-mail</Text>
+                <Controller
+                  control={control}
+                  name="Email"
+                  rules={{
+                    required: 'Email is Required',
+                    pattern: {
+                      value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                      message: "Invalid email format"
+                    }
+                  }}
+                  render={({ field: { onChange, onBlur, value } }) => (
+                    <TextInput
+                      textContentType="emailAddress"
+                      style={styles.input}
+                      onBlur={onBlur}
+                      onChangeText={onChange}
+                      value={value}
+                      placeholder=""
+                      placeholderTextColor="rgba(255,255,255,0.4)"
+                      keyboardType="email-address"
+                      autoCapitalize="none"
+                    />
+                  )}
+                />
+                <View style={styles.inputUnderline} />
+                {errors.Email && (
+                  <Text style={styles.errorText}>{errors.Email.message}</Text>
+                )}
+              </View>
+
+              {/* Password */}
+              <View style={styles.inputGroup}>
+                <Text style={styles.inputLabel}>Password</Text>
+                <Controller
+                  control={control}
+                  name="Password"
+                  rules={{
+                    required: 'Password is Required',
+                    minLength: {
+                      value: 8,
+                      message: 'Password must be at least 8 characters'
+                    }
+                  }}
+                  render={({ field: { onChange, onBlur, value } }) => (
+                    <TextInput
+                      textContentType="password"
+                      style={styles.input}
+                      onBlur={onBlur}
+                      onChangeText={onChange}
+                      value={value}
+                      placeholder=""
+                      placeholderTextColor="rgba(255,255,255,0.4)"
+                      secureTextEntry
+                    />
+                  )}
+                />
+                <View style={styles.inputUnderline} />
+                {errors.Password && (
+                  <Text style={styles.errorText}>{errors.Password.message}</Text>
+                )}
+              </View>
+
+              {/* Submit Button */}
+              <TouchableOpacity
+                style={styles.submitButton}
+                onPress={handleSubmit(handleLogin)}
+                disabled={isLoading}
+              >
+                <Text style={styles.submitButtonText}>
+                  {isLoading ? 'Submitting...' : 'Submit'}
+                </Text>
+              </TouchableOpacity>
+
+              {/* Sign In Link */}
+              <TouchableOpacity onPress={() => router.push('/register')} style={styles.signInContainer}>
+                <Text style={styles.signInText}>
+                  Don't have an account?
+                  <Text style={styles.signInLinkText}> Click here to Register</Text>
+                </Text>
+              </TouchableOpacity>
+            </ScrollView>
+
+            {/* Social Login Buttons */}
+            {/*<View style={styles.socialButtonsContainer}>
+              <TouchableOpacity style={styles.socialButton} onPress={handleGoogleLogin}>
+                <Text style={styles.socialButtonText}>Continue with Google</Text>
+              </TouchableOpacity>
+              
+              <TouchableOpacity style={styles.socialButton} onPress={handleAppleLogin}>
+                <Text style={styles.socialButtonText}>Continue with Apple</Text>
+              </TouchableOpacity>
+            </View>
+
+            {/* Forgot Password Link */}
+            {/*<TouchableOpacity onPress={handleForgotPassword} style={styles.forgotPasswordContainer}>
+              <Text style={styles.forgotPasswordText}>
+                Forgot your e-mail or password? 
+                <Text style={styles.resetLinkText}> Reset here</Text>
+              </Text>
+            </TouchableOpacity>
+              */}
+          </BlurView>
+        </View>
       </View>
-      */}
-      </ScrollView>
-    </SafeAreaView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  textInput: {
-    height: 50,
-    borderColor: '#E5E7EB',
-    borderWidth: 1,
-    marginBottom: 10,
-    paddingLeft: 16,
-    borderRadius: 8,
-    backgroundColor: '#F9FAFB',
-    color: '#000000',
-  
+  container: {
+    flex: 1,
+    backgroundColor: '#316536',
+  },
+  background: {
+    flex: 1,
+    backgroundColor: '#316536',
+    position: 'relative',
+  },
+  titleContainer: {
+    alignItems: 'center',
+    marginTop: 60,
+    marginBottom: 20,
+  },
+  appTitle: {
+    fontSize: 48,
+    fontWeight: '400',
+    color: '#FFF',
+    fontFamily: 'Rubik',
+    textAlign: 'center',
+  },
+  tagline: {
+    fontSize: 14,
+    fontWeight: '400',
+    color: '#FFF',
+    fontFamily: 'Rubik',
+    textAlign: 'center',
+    marginTop: 8,
+  },
+  tennisBall: {
+    position: 'absolute',
+    top: 150,
+    right: -20,
+    width: 180,
+    height: 126 ,
+    transform: [{ rotate: '17.812deg' }],
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+  },
+  tennisCourtImage: {
+    position: 'absolute',
+    bottom: -100,
+    left: -40,
+    width: 450,
+    height: 250,
+    opacity: 0.8,
+  },
+  formContainer: {
+    position: 'absolute',
+    left: 0,
+    top: 196,
+    width: 348,
+    height: 500,
+    borderTopRightRadius: 30,
+    borderBottomRightRadius: 30,
+    overflow: 'hidden',
+  },
+  blurContainer: {
+    flex: 1,
+    backgroundColor: 'rgba(255, 255, 255, 0.22)',
+    padding: 20,
+    borderRadius: '0 30px 30px 0',
+  },
+  welcomeTitle: {
+    fontSize: 20,
+    fontWeight: '400',
+    color: '#FFF',
+    fontFamily: 'Rubik',
+    marginBottom: 8,
+  },
+  welcomeSubtitle: {
+    fontSize: 12,
+    fontWeight: '400',
+    color: '#FFF',
+    fontFamily: 'Rubik',
+    marginBottom: 20,
+    lineHeight: 16,
+  },
+  formScrollView: {
+    flex: 1,
+    marginBottom: 20,
+  },
+  inputGroup: {
+    marginBottom: 15,
+  },
+  inputLabel: {
+    fontSize: 14,
+    fontWeight: '400',
+    color: 'rgba(255, 255, 255, 0.6)',
+    fontFamily: 'Rubik',
+    marginBottom: 4,
+  },
+  input: {
+    height: 30,
+    color: '#FFF',
+    fontSize: 16,
+    fontFamily: 'Rubik',
+    paddingVertical: 0,
+  },
+  inputUnderline: {
+    height: 1,
+    backgroundColor: '#FFF',
+    marginTop: 5,
+    width: 227,
+  },
+  phoneInputContainer: {
+    backgroundColor: 'transparent',
+  },
+  phoneContainer: {
+    backgroundColor: 'transparent',
+    borderWidth: 0,
+    height: 30,
+  },
+  phoneInput: {
+    backgroundColor: 'transparent',
+    color: '#FFF',
+    fontSize: 16,
+    fontFamily: 'Rubik',
+  },
+  errorText: {
+    color: '#FF6B6B',
+    fontSize: 12,
+    marginTop: 4,
+    fontFamily: 'Rubik',
+  },
+  submitButton: {
+    width: 161,
+    height: 35,
+    backgroundColor: '#FFF',
+    borderRadius: 30,
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 4,
+    marginTop: 10,
+  },
+  submitButtonText: {
+    color: '#316536',
+    fontSize: 20,
+    fontWeight: '400',
+    fontFamily: 'Rubik',
+  },
+  socialButtonsContainer: {
+    gap: 12,
+    marginBottom: 16,
+  },
+  socialButton: {
+    width: 237,
+    height: 35,
+    backgroundColor: '#FFF',
+    borderRadius: 30,
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 4,
+  },
+  socialButtonText: {
+    color: '#000',
+    fontSize: 14,
+    fontWeight: '400',
+    fontFamily: 'Rubik',
+  },
+  forgotPasswordContainer: {
+    alignItems: 'flex-start',
+  },
+  forgotPasswordText: {
+    color: '#FFF',
+    fontSize: 14,
+    fontWeight: '400',
+    fontFamily: 'Rubik',
+    textShadowColor: 'rgba(0, 0, 0, 0.25)',
+    textShadowOffset: { width: 0, height: 4 },
+    textShadowRadius: 4,
+  },
+  resetLinkText: {
+    color: '#EFEEBC',
+  },
+  signInContainer: {
+    alignItems: 'center',
+    marginTop: 15,
+  },
+  signInText: {
+    color: '#FFF',
+    fontSize: 14,
+    fontWeight: '400',
+    fontFamily: 'Rubik',
+    textAlign: 'center',
+  },
+  signInLinkText: {
+    color: '#EFEEBC',
+    textDecorationLine: 'underline',
   },
 });
 
