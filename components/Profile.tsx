@@ -316,7 +316,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   statNumber: {
-    fontSize: 36,
+    fontSize: 14,
     fontWeight: 'bold',
     color: '#FFFFFF',
     fontFamily: 'Rubik',
@@ -333,7 +333,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   rankingNumber: {
-    fontSize: 48,
+    fontSize: 24,
     fontWeight: 'bold',
     color: '#FFFFFF',
     fontFamily: 'Rubik',

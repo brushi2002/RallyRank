@@ -68,7 +68,7 @@ const SetScoreInput = ({
       
       <View style={styles.scoresRow}>
         <View style={styles.playerScoreSection}>
-          <Text style={styles.playerLabel}>Your Score</Text>
+          <Text style={styles.playerLabel} numberOfLines={1}>Your Score</Text>
           <View style={styles.scoreGrid}>
             {[0, 1, 2].map((value) => (
               <ScoreButton
@@ -102,7 +102,7 @@ const SetScoreInput = ({
         </View>
 
         <View style={styles.playerScoreSection}>
-          <Text style={styles.playerLabel}>Opponent's Score</Text>
+          <Text style={styles.playerLabel} numberOfLines={1}>Opponent</Text>
           <View style={styles.scoreGrid}>
             {[0, 1, 2].map((value) => (
               <ScoreButton
@@ -200,19 +200,20 @@ const styles = StyleSheet.create({
   },
   headerTitle: {
     fontFamily: 'Rubik',
-    fontSize: 20,
+    fontSize: 16,
     fontWeight: '400',
     color: '#316536',
-    lineHeight: 24,
+    lineHeight: 20,
   },
   inputContainer: {
     paddingHorizontal: 41,
     marginBottom: 32,
   },
   inputField: {
-    height: 46,
+    minHeight: 48,
     paddingHorizontal: 14,
-    paddingVertical: 12,
+    paddingTop: 16,
+    paddingBottom: 20,
     borderRadius: 10,
     borderWidth: 1,
     borderColor: '#EDF1F3',
@@ -222,23 +223,26 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.24,
     shadowRadius: 4,
     elevation: 4,
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
+    alignItems: 'flex-start',
   },
   inputText: {
     fontFamily: 'Inter',
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: '500',
     color: '#316536',
-    lineHeight: 20,
     letterSpacing: -0.14,
+    textAlignVertical: 'top',
+    includeFontPadding: false,
+    flex: 0,
   },
   scoresContainer: {
     paddingHorizontal: 38,
-    marginTop: -4,
+    marginTop: -8,
   },
   scoresTitle: {
     fontFamily: 'Rubik',
-    fontSize: 20,
+    fontSize: 16,
     fontWeight: '400',
     color: '#316536',
     marginBottom: 8,
@@ -258,23 +262,28 @@ const styles = StyleSheet.create({
   scoresRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+    gap: 20,
   },
   playerScoreSection: {
     flex: 1,
+    alignItems: 'center',
   },
   playerLabel: {
     fontFamily: 'Inter',
-    fontSize: 14,
+    fontSize: 11,
     fontWeight: '400',
     color: '#316536',
-    lineHeight: 19.6,
+    lineHeight: 14,
     letterSpacing: -0.14,
-    marginBottom: 24,
+    marginBottom: 16,
+    numberOfLines: 1,
+    textAlign: 'center',
   },
   scoreGrid: {
     flexDirection: 'row',
     gap: 8,
     marginBottom: 8,
+    justifyContent: 'center',
   },
   scoreButton: {
     width: 43,
@@ -329,7 +338,8 @@ const styles = StyleSheet.create({
   },
   saveButton: {
     marginHorizontal: 36,
-    marginBottom: 36,
+    marginBottom: 48,
+    marginTop: 16,
     height: 44,
     borderRadius: 30,
     backgroundColor: '#316536',
@@ -343,7 +353,7 @@ const styles = StyleSheet.create({
   },
   saveButtonText: {
     fontFamily: 'Rubik',
-    fontSize: 20,
+    fontSize: 16,
     fontWeight: '400',
     color: '#FFFFFF',
   },
@@ -633,7 +643,7 @@ export default function EnterScore() {
           style={[styles.saveButton, isSubmitting && { opacity: 0.5 }]}
         >
           <Text style={styles.saveButtonText}>
-            {isSubmitting ? 'Saving...' : 'Save Match Results'}
+            {isSubmitting ? 'Saving...' : 'Save Match Result'}
           </Text>
         </TouchableOpacity>
 

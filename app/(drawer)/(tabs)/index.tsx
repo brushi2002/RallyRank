@@ -163,7 +163,7 @@ function HomeScreenContent() {
           <View style={styles.gradientLayer2} />
         </View>
         
-        {/* Header */}
+        {/* Header with Button */}
         <View style={styles.header}>
           <TouchableOpacity 
             style={[styles.myMatchesButton, selectedCategory === 'My Matches' && styles.activeButton]}
@@ -175,7 +175,7 @@ function HomeScreenContent() {
           </TouchableOpacity>
         </View>
         
-        {/* Recent Matches Title */}
+        {/* Title Section */}
         <View style={styles.titleSection}>
           <Text style={styles.recentMatchesTitle}>Recent Matches</Text>
         </View>
@@ -234,7 +234,7 @@ const styles = StyleSheet.create({
   header: {
     backgroundColor: '#F8F9FA',
     paddingHorizontal: 20,
-    paddingVertical: 15,
+    paddingVertical: 10,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'flex-start',
@@ -242,16 +242,16 @@ const styles = StyleSheet.create({
   },
   myMatchesButton: {
     backgroundColor: '#FFFFFF',
-    paddingHorizontal: 20,
-    paddingVertical: 8,
-    borderRadius: 20,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 16,
   },
   activeButton: {
     backgroundColor: '#316536',
   },
   myMatchesText: {
     color: '#47A86A',
-    fontSize: 14,
+    fontSize: 12,
     fontWeight: '500',
     fontFamily: 'Rubik',
   },
@@ -260,11 +260,11 @@ const styles = StyleSheet.create({
   },
   titleSection: {
     paddingHorizontal: 20,
-    paddingVertical: 15,
+    paddingVertical: 10,
     backgroundColor: '#F8F9FA',
   },
   recentMatchesTitle: {
-    fontSize: 24,
+    fontSize: 20,
     fontWeight: '600',
     color: '#316536',
     fontFamily: 'Rubik',
@@ -308,7 +308,7 @@ const styles = StyleSheet.create({
   },
   playerSection: {
     alignItems: 'center',
-    flex: 1,
+    flex: 2,
   },
   avatar: {
     width: 50,
@@ -364,6 +364,8 @@ const styles = StyleSheet.create({
   vsSection: {
     alignItems: 'center',
     paddingHorizontal: 20,
+    flex: 1,
+    justifyContent: 'center',
   },
   vsText: {
     fontSize: 18,

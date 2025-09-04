@@ -103,13 +103,15 @@ const Item = ({ player, rank }: { player: Player; rank: number }) => {
           <UserAvatar />
           
           <View style={styles.playerInfo}>
-            <Text style={styles.playerName}>{player.name}</Text>
-            <Text style={styles.playerRecord}>
+            <Text style={styles.playerName} numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.8}>
+              {player.name}
+            </Text>
+            <Text style={styles.playerRecord} numberOfLines={1}>
               Recent: {player.recentMatches.slice(0, 3).map((match) => 
                 match.winner === "player1" && match.player_id1.$id === player.id ? 'W' : 'L'
               ).join(' ')}
             </Text>
-            <Text style={styles.winRate}>
+            <Text style={styles.winRate} numberOfLines={1}>
               Win Rate: {((player.wins / (player.wins + player.losses)) * 100).toFixed(1)}%
             </Text>
           </View>
@@ -276,7 +278,7 @@ const LadderStandings = () => {
 };
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    flex: 2,
   },
   backgroundImage: {
     flex: 1,
@@ -296,7 +298,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0.3)',
   },
   headerTitle: {
-    fontSize: 32,
+    fontSize: 20,
     fontWeight: 'bold',
     color: 'white',
     textAlign: 'center',
@@ -337,11 +339,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     flex: 1,
+    minWidth: 0,
   },
   rankSection: {
-    width: 40,
+    width: 35,
     alignItems: 'center',
-    marginRight: 12,
+    marginRight: 8,
   },
   rankBadge: {
     width: 32,
@@ -357,13 +360,13 @@ const styles = StyleSheet.create({
     color: 'white',
   },
   avatar: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
+    width: 40,
+    height: 40,
+    borderRadius: 20,
     backgroundColor: '#47A86A',
     alignItems: 'center',
     justifyContent: 'center',
-    marginRight: 12,
+    marginRight: 8,
   },
   userSilhouette: {
     alignItems: 'center',
@@ -387,12 +390,14 @@ const styles = StyleSheet.create({
   },
   playerInfo: {
     flex: 1,
+    minWidth: 0,
   },
   playerName: {
     fontSize: 16,
     fontWeight: '600',
     color: '#333',
     marginBottom: 2,
+    flexShrink: 1,
   },
   playerRecord: {
     fontSize: 12,
@@ -405,10 +410,10 @@ const styles = StyleSheet.create({
   },
   challengeButton: {
     backgroundColor: '#47A86A',
-    paddingHorizontal: 20,
-    paddingVertical: 10,
-    borderRadius: 20,
-    marginLeft: 16,
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 16,
+    marginLeft: 8,
   },
   challengeButtonText: {
     color: 'white',
